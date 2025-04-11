@@ -6,13 +6,17 @@ import com.EmaDeveloper.ExpenseTracker.repository.ExpenseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
-public class ExpenseServiceImpl implements ExpenseService{
+public class ExpenseServiceImpl implements ExpenseService {
     private final ExpenseRepository expenseRepository;
 
     // method to save or update an expense
-    private Expense saveOrUpdateExpense(Expense expense, ExpenseDTO expenseDTO){
+    private Expense saveOrUpdateExpense(Expense expense, ExpenseDTO expenseDTO) {
         expense.setTitle(expenseDTO.getTitle());
         expense.setDate(expenseDTO.getDate());
         expense.setCategory(expenseDTO.getCategory());
@@ -22,13 +26,16 @@ public class ExpenseServiceImpl implements ExpenseService{
         return expenseRepository.save(expense);
     }
 
-
-    @Override
-    public Expense getAllExpenses() {
-        return null;
+    // method to get all expenses
+    public List<Expense> getAllExpenses() {
+        return expenseRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparing(Expense::getDate).reversed())
+                .toList();
     }
 
-    public Expense postExpense(ExpenseDTO expenseDTO){
+    // method to post a new expense
+    public Expense postExpense(ExpenseDTO expenseDTO) {
         return saveOrUpdateExpense(new Expense(), expenseDTO);
     }
 }
