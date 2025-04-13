@@ -9,7 +9,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.freemarker.FreeMarkerTemplateAvailabilityProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,6 +47,25 @@ public class ExpenseController {
         }
         // If not empty, return the list of expenses
         return ResponseEntity.ok(expenses);
+    }
+
+    @Operation(summary = "Get an expense by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Expense retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Expense not found"),
+            @ApiResponse(responseCode = "500", description = "Error retrieving expense")
+    })
+
+    // Endpoint to get an expense by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getExpenseById(@PathVariable Long id){
+        try {
+            return ResponseEntity.ok(expenseService.getExpenseById(id));
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong");
+        }
     }
 
     @Operation(summary = "Create a new expense")

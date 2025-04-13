@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 public class ExpenseServiceImpl implements ExpenseService {
     private final ExpenseRepository expenseRepository;
 
-    // method to save or update an expense
+    // method to save an expense
     private Expense saveOrUpdateExpense(Expense expense, ExpenseDTO expenseDTO) {
         expense.setTitle(expenseDTO.getTitle());
         expense.setDate(expenseDTO.getDate());
@@ -32,6 +33,16 @@ public class ExpenseServiceImpl implements ExpenseService {
                 .stream()
                 .sorted(Comparator.comparing(Expense::getDate).reversed())
                 .toList();
+    }
+
+    // method to get an expense by id
+    public Expense getExpenseById(Long id) {
+        Optional<Expense> expenseOptional = expenseRepository.findById(id);
+        if(expenseOptional.isPresent()) {
+            return expenseOptional.get();
+        } else {
+            throw new RuntimeException("Expense not found with id: " + id);
+        }
     }
 
     // method to post a new expense

@@ -9,7 +9,7 @@ public interface ExpenseService{
 
     List<Expense> getAllExpenses();
 
+    Expense getExpenseById(Long id);
+
     Expense postExpense(ExpenseDTO expenseDTO);
-
-
 }

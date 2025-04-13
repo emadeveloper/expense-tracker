@@ -105,4 +105,32 @@ class ExpenseServiceImplTest {
 
         verify(expenseRepository, times(1)).findAll();
     }
+
+    @Test
+    void getExpenseById_shouldReturnExpense_whenIdExists() {
+        // Arrange
+        Long expenseId = 1L;
+        Expense expense = new Expense();
+        expense.setId(expenseId);
+        expense.setTitle("Gym");
+        expense.setAmount(3000.0);
+        expense.setCategory("Health");
+        expense.setDate(LocalDate.parse("2025-04-13"));
+        expense.setDescription("Gym monthly fee");
+
+        when(expenseRepository.findById(expenseId)).thenReturn(java.util.Optional.of(expense));
+
+        // Act
+        Expense result = expenseService.getExpenseById(expenseId);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(expenseId, result.getId());
+        assertEquals("Gym", result.getTitle());
+        assertEquals(3000.0, result.getAmount());
+        assertEquals("Health", result.getCategory());
+        assertEquals(LocalDate.parse("2025-04-13"), result.getDate());
+        assertEquals("Gym monthly fee", result.getDescription());
+        verify(expenseRepository, times(1)).findById(expenseId);
+    }
 }
