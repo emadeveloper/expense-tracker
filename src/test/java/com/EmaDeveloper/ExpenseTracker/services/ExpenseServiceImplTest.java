@@ -26,7 +26,7 @@ class ExpenseServiceImplTest {
     private ExpenseServiceImpl expenseService;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
@@ -131,6 +131,45 @@ class ExpenseServiceImplTest {
         assertEquals("Health", result.getCategory());
         assertEquals(LocalDate.parse("2025-04-13"), result.getDate());
         assertEquals("Gym monthly fee", result.getDescription());
+
         verify(expenseRepository, times(1)).findById(expenseId);
+    }
+
+    @Test
+    void updateExpense_shouldReturnUpdatedExpense_whenIdExists() {
+        // Arrange
+        Long expenseId = 1L;
+        Expense expense = new Expense();
+        expense.setId(expenseId);
+        expense.setTitle("Gym");
+        expense.setAmount(3000.0);
+        expense.setCategory("Health");
+        expense.setDate(LocalDate.parse("2025-04-13"));
+        expense.setDescription("Gym monthly fee");
+
+        ExpenseDTO expenseDTO = new ExpenseDTO();
+        expenseDTO.setTitle("Updated Gym");
+        expenseDTO.setAmount(3500.0);
+        expenseDTO.setCategory("Health");
+        expenseDTO.setDate(LocalDate.parse("2025-04-14"));
+        expenseDTO.setDescription("Updated gym monthly fee");
+
+        when(expenseRepository.findById(expenseId)).thenReturn(java.util.Optional.of(expense));
+        when(expenseRepository.save(any(Expense.class))).thenReturn(expense);
+
+        // Act
+        Expense result = expenseService.updateExpense(expenseId, expenseDTO);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(expenseId, result.getId());
+        assertEquals("Updated Gym", result.getTitle());
+        assertEquals(3500.0, result.getAmount());
+        assertEquals("Health", result.getCategory());
+        assertEquals(LocalDate.parse("2025-04-14"), result.getDate());
+        assertEquals("Updated gym monthly fee", result.getDescription());
+
+        verify(expenseRepository, times(1)).findById(expenseId);
+        verify(expenseRepository, times(1)).save(any(Expense.class));
     }
 }

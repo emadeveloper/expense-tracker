@@ -3,6 +3,7 @@ package com.EmaDeveloper.ExpenseTracker.services;
 import com.EmaDeveloper.ExpenseTracker.dto.ExpenseDTO;
 import com.EmaDeveloper.ExpenseTracker.entities.Expense;
 import com.EmaDeveloper.ExpenseTracker.repository.ExpenseRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     // method to get all expenses
+    @Override
     public List<Expense> getAllExpenses() {
         return expenseRepository.findAll()
                 .stream()
@@ -36,10 +38,11 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     // method to get an expense by id
+    @Override
     public Expense getExpenseById(Long id) {
-        Optional<Expense> expenseOptional = expenseRepository.findById(id);
-        if(expenseOptional.isPresent()) {
-            return expenseOptional.get();
+        Optional<Expense> optionalExpense = expenseRepository.findById(id);
+        if (optionalExpense.isPresent()) {
+            return optionalExpense.get();
         } else {
             throw new RuntimeException("Expense not found with id: " + id);
         }
@@ -48,5 +51,17 @@ public class ExpenseServiceImpl implements ExpenseService {
     // method to post a new expense
     public Expense postExpense(ExpenseDTO expenseDTO) {
         return saveOrUpdateExpense(new Expense(), expenseDTO);
+    }
+
+    // method to update an expense
+    @Override
+    public Expense updateExpense(Long id, ExpenseDTO expenseDTO) {
+        Optional<Expense> optionalExpense = expenseRepository.findById(id);
+        if (optionalExpense.isPresent()) {
+            Expense expense = optionalExpense.get();
+            return saveOrUpdateExpense(expense, expenseDTO);
+        } else {
+            throw new EntityNotFoundException("Expense not found with id: " + id);
+        }
     }
 }

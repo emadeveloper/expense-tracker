@@ -58,7 +58,7 @@ public class ExpenseController {
 
     // Endpoint to get an expense by ID
     @GetMapping("/{id}")
-    public ResponseEntity<?> getExpenseById(@PathVariable Long id){
+    public ResponseEntity<?> getExpenseById(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(expenseService.getExpenseById(id));
         } catch (EntityNotFoundException ex) {
@@ -79,10 +79,30 @@ public class ExpenseController {
     public ResponseEntity<?> postExpense(@RequestBody ExpenseDTO expenseDTO) {
         Expense createdExpense = expenseService.postExpense(expenseDTO);
 
-        if(createdExpense != null) {
+        if (createdExpense != null) {
             return ResponseEntity.status(HttpStatus.CREATED).body(createdExpense);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to create expense");
+        }
+    }
+
+    @Operation(summary = "Update an expense by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Expense updated successfully"),
+            @ApiResponse(responseCode = "404", description = "Expense not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid expense data")
+    })
+
+    // Endpoint to update an expense by ID
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateExpense(@PathVariable Long id, @RequestBody ExpenseDTO expenseDTO) {
+        try {
+            Expense updatedExpense = expenseService.updateExpense(id, expenseDTO);
+            return ResponseEntity.ok(updatedExpense);
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong");
         }
     }
 }
