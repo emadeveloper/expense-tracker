@@ -64,4 +64,16 @@ public class ExpenseServiceImpl implements ExpenseService {
             throw new EntityNotFoundException("Expense not found with id: " + id);
         }
     }
+
+    // Method to delete an expense
+    @Override
+    public void deleteExpense(Long id) {
+        // Optionally, check if the expense was deleted successfully
+        Optional<Expense> optionalExpense = expenseRepository.findById(id);
+        if (optionalExpense.isPresent()) {
+            expenseRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Expense not found with id: " + id);
+        }
+    }
 }

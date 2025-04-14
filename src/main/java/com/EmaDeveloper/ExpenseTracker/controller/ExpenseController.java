@@ -105,4 +105,24 @@ public class ExpenseController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong");
         }
     }
+
+    @Operation(summary = "Delete an expense by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Expense deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Expense not found"),
+            @ApiResponse(responseCode = "500", description = "Error deleting expense")
+    })
+
+    // Endpoint to delete an expense by ID
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteExpense(@PathVariable Long id) {
+        try {
+            expenseService.deleteExpense(id);
+            return ResponseEntity.ok("Expense deleted successfully");
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong");
+        }
+    }
 }

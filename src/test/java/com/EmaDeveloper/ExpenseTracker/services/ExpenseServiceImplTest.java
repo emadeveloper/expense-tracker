@@ -172,4 +172,26 @@ class ExpenseServiceImplTest {
         verify(expenseRepository, times(1)).findById(expenseId);
         verify(expenseRepository, times(1)).save(any(Expense.class));
     }
+
+    @Test
+    void deleteExpense_shouldCallDeleteById_whenIdExists() {
+        // Arrange
+        Long expenseId = 1L;
+        Expense expense = new Expense();
+        expense.setId(expenseId);
+        expense.setTitle("Gym");
+        expense.setAmount(3000.0);
+        expense.setCategory("Health");
+        expense.setDate(LocalDate.parse("2025-04-13"));
+        expense.setDescription("Gym monthly fee");
+
+        when(expenseRepository.findById(expenseId)).thenReturn(java.util.Optional.of(expense));
+
+        // Act
+        expenseService.deleteExpense(expenseId);
+
+
+        // Assert
+        verify(expenseRepository, times(1)).deleteById(expenseId);
+    }
 }
