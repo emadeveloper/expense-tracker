@@ -3,7 +3,7 @@ package com.EmaDeveloper.ExpenseTracker.controller;
 import com.EmaDeveloper.ExpenseTracker.dto.ExpenseDTO;
 import com.EmaDeveloper.ExpenseTracker.entities.Expense;
 import com.EmaDeveloper.ExpenseTracker.repository.ExpenseRepository;
-import com.EmaDeveloper.ExpenseTracker.services.ExpenseService;
+import com.EmaDeveloper.ExpenseTracker.services.expense.ExpenseService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.freemarker.FreeMarkerTemplateAvailabilityProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

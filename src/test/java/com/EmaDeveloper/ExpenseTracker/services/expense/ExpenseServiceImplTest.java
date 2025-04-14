@@ -1,9 +1,8 @@
-package com.EmaDeveloper.ExpenseTracker.services;
+package com.EmaDeveloper.ExpenseTracker.services.expense;
 
 import com.EmaDeveloper.ExpenseTracker.dto.ExpenseDTO;
 import com.EmaDeveloper.ExpenseTracker.entities.Expense;
 import com.EmaDeveloper.ExpenseTracker.repository.ExpenseRepository;
-import lombok.Builder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

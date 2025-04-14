@@ -1,9 +1,9 @@
 package com.EmaDeveloper.ExpenseTracker.repository;
 
-import com.EmaDeveloper.ExpenseTracker.entities.Expense;
+import com.EmaDeveloper.ExpenseTracker.entities.Income;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ExpenseRepository extends JpaRepository <Expense, Long>{
+public interface IncomeRepository extends JpaRepository<Income, Long> {
 }

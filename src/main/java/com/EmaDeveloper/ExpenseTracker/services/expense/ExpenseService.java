@@ -1,4 +1,4 @@
-package com.EmaDeveloper.ExpenseTracker.services;
+package com.EmaDeveloper.ExpenseTracker.services.expense;
 
 import com.EmaDeveloper.ExpenseTracker.dto.ExpenseDTO;
 import com.EmaDeveloper.ExpenseTracker.entities.Expense;

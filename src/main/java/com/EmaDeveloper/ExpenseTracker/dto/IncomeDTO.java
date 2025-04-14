@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class ExpenseDTO {
+public class IncomeDTO {
 
     private Long id;
 
@@ -18,4 +18,5 @@ public class ExpenseDTO {
     private LocalDate date;
 
     private Double amount;
+
 }
