@@ -23,7 +23,6 @@ import java.util.List;
 @RequestMapping("/api/v1/expense")
 public class ExpenseController {
     private final ExpenseService expenseService;
-    private final ExpenseRepository expenseRepository;
 
     @Operation(summary = "Get all expenses")
     @ApiResponses(value = {
@@ -78,11 +77,9 @@ public class ExpenseController {
     public ResponseEntity<?> postExpense(@RequestBody ExpenseDTO expenseDTO) {
         Expense createdExpense = expenseService.postExpense(expenseDTO);
 
-        if (createdExpense != null) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdExpense);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to create expense");
-        }
+        return createdExpense != null
+                ? ResponseEntity.status(HttpStatus.CREATED).body(createdExpense)
+                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid expense data");
     }
 
     @Operation(summary = "Update an expense by ID")

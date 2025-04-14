@@ -4,6 +4,7 @@ import com.EmaDeveloper.ExpenseTracker.dto.ExpenseDTO;
 import com.EmaDeveloper.ExpenseTracker.entities.Expense;
 import com.EmaDeveloper.ExpenseTracker.repository.ExpenseRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.Version;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ import java.util.Optional;
 public class ExpenseServiceImpl implements ExpenseService {
     private final ExpenseRepository expenseRepository;
 
-    // method to save an expense
+    // method to save or update an expense
     private Expense saveOrUpdateExpense(Expense expense, ExpenseDTO expenseDTO) {
         expense.setId(expenseDTO.getId());
         expense.setTitle(expenseDTO.getTitle());
@@ -49,6 +50,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     // method to post a new expense
+    @Override
     public Expense postExpense(ExpenseDTO expenseDTO) {
         return saveOrUpdateExpense(new Expense(), expenseDTO);
     }

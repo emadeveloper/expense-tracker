@@ -1,5 +1,7 @@
 package com.EmaDeveloper.ExpenseTracker.dto;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -15,8 +17,11 @@ public class IncomeDTO {
 
     private String category;
 
+    @NotNull
     private LocalDate date;
 
+    @NotNull
+    @Positive
     private Double amount;
 
 }
