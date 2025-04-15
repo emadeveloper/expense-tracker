@@ -38,6 +38,17 @@ public class IncomeServiceImpl implements IncomeService {
                 .toList();
     }
 
+    // method to get income by id
+    @Override
+    public Income getIncomeById(Long id) {
+        Optional<Income> optionalIncome = incomeRepository.findById(id);
+        if (optionalIncome.isPresent()) {
+            return optionalIncome.get();
+        } else {
+            throw new EntityNotFoundException("Income not found with id: " + id);
+        }
+    }
+
     // method to create a new income
     @Override
     public Income postIncome(IncomeDTO incomeDTO) {

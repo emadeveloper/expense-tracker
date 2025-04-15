@@ -33,37 +33,6 @@ class IncomeServiceImplTest {
     }
 
     @Test
-    void testPostIncome() {
-        // Arrange
-        IncomeDTO incomeDTO = new IncomeDTO();
-        incomeDTO.setTitle("Salario");
-        incomeDTO.setAmount(5000.0);
-        incomeDTO.setCategory("Trabajo");
-        incomeDTO.setDate(LocalDate.parse("2025-04-07"));
-        incomeDTO.setDescription("Pago mensual del salario");
-
-        Income savedIncome = new Income();
-        savedIncome.setId(1L);
-        savedIncome.setTitle(incomeDTO.getTitle());
-        savedIncome.setAmount(incomeDTO.getAmount());
-        savedIncome.setCategory(incomeDTO.getCategory());
-        savedIncome.setDate(incomeDTO.getDate());
-        savedIncome.setDescription(incomeDTO.getDescription());
-
-        when(incomeRepository.save(any(Income.class))).thenReturn(savedIncome);
-
-        // Act
-        Income result = incomeService.postIncome(incomeDTO);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals("Salario", result.getTitle());
-        assertEquals(5000.0, result.getAmount());
-
-        verify(incomeRepository, times(1)).save(any(Income.class));
-    }
-
-    @Test
     void testGetAllIncomes_shouldReturnAllIncomesSortedDescending() {
         // Arrange
         Income income1 = Income.builder()
@@ -109,6 +78,67 @@ class IncomeServiceImplTest {
         assertEquals(income1.getId(), result.get(2).getId()); // Más viejo: 2025-04-07
 
         verify(incomeRepository, times(1)).findAll();
+    }
+
+    @Test
+    void testGetIncomeById_shouldReturnIncome() {
+        // Arrange
+        Long incomeId = 1L;
+        Income income = Income.builder()
+                .id(incomeId)
+                .title("Salario")
+                .amount(5000.0)
+                .category("Trabajo")
+                .date(LocalDate.parse("2025-04-10"))
+                .description("Pago mensual del salario")
+                .build();
+
+        when(incomeRepository.findById(incomeId)).thenReturn(Optional.of(income));
+
+        // Act
+        Income result = incomeService.getIncomeById(incomeId);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(incomeId, result.getId());
+        assertEquals("Salario", result.getTitle());
+        assertEquals("Trabajo", result.getCategory());
+        assertEquals(5000.0, result.getAmount());
+        assertEquals(LocalDate.parse("2025-04-10"), result.getDate());
+        assertEquals("Pago mensual del salario", result.getDescription());
+
+        verify(incomeRepository, times(1)).findById(incomeId);
+    }
+
+    @Test
+    void testPostIncome() {
+        // Arrange
+        IncomeDTO incomeDTO = new IncomeDTO();
+        incomeDTO.setTitle("Salario");
+        incomeDTO.setAmount(5000.0);
+        incomeDTO.setCategory("Trabajo");
+        incomeDTO.setDate(LocalDate.parse("2025-04-07"));
+        incomeDTO.setDescription("Pago mensual del salario");
+
+        Income savedIncome = new Income();
+        savedIncome.setId(1L);
+        savedIncome.setTitle(incomeDTO.getTitle());
+        savedIncome.setAmount(incomeDTO.getAmount());
+        savedIncome.setCategory(incomeDTO.getCategory());
+        savedIncome.setDate(incomeDTO.getDate());
+        savedIncome.setDescription(incomeDTO.getDescription());
+
+        when(incomeRepository.save(any(Income.class))).thenReturn(savedIncome);
+
+        // Act
+        Income result = incomeService.postIncome(incomeDTO);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals("Salario", result.getTitle());
+        assertEquals(5000.0, result.getAmount());
+
+        verify(incomeRepository, times(1)).save(any(Income.class));
     }
 
     @Test

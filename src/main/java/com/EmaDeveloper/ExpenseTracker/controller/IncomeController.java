@@ -26,21 +26,6 @@ import java.util.List;
 public class IncomeController {
     private final IncomeService incomeService;
 
-    @Operation(summary = "Create a new income")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Income created successfully"),
-            @ApiResponse(responseCode = "500", description = "Error creating income")
-    })
-
-    @PostMapping
-    public ResponseEntity<?> postIncome(@Valid @RequestBody IncomeDTO incomeDTO) {
-        Income createdIncome = incomeService.postIncome(incomeDTO);
-
-        return createdIncome != null
-                ? ResponseEntity.status(HttpStatus.CREATED).body(createdIncome)
-                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error creating income");
-    }
-
     @Operation(summary = "Get all incomes")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Incomes retrieved successfully"),
@@ -64,12 +49,48 @@ public class IncomeController {
         return ResponseEntity.ok(incomes);
     }
 
+    @Operation(summary = "Get income by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Income retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Income not found"),
+            @ApiResponse(responseCode = "500", description = "Error retrieving income")
+    })
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getIncomeById(@PathVariable Long id){
+        try {
+            Income income = incomeService.getIncomeById(id);
+            return ResponseEntity.ok(income);
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Income not found with id: " + id);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong");
+        }
+    }
+
+    @Operation(summary = "Create a new income")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Income created successfully"),
+            @ApiResponse(responseCode = "500", description = "Error creating income")
+    })
+
+    @PostMapping
+    public ResponseEntity<?> postIncome(@Valid @RequestBody IncomeDTO incomeDTO) {
+        Income createdIncome = incomeService.postIncome(incomeDTO);
+
+        return createdIncome != null
+                ? ResponseEntity.status(HttpStatus.CREATED).body(createdIncome)
+                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error creating income");
+    }
+
     @Operation(summary = "Update an existing income")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Income updated successfully"),
             @ApiResponse(responseCode = "404", description = "Income not found"),
             @ApiResponse(responseCode = "500", description = "Error updating income")
     })
+
+
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateIncome(@PathVariable Long id, @Valid @RequestBody IncomeDTO incomeDTO) {
