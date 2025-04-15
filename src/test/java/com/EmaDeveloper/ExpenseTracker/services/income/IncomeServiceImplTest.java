@@ -12,6 +12,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -108,6 +109,45 @@ class IncomeServiceImplTest {
         assertEquals(income1.getId(), result.get(2).getId()); // Más viejo: 2025-04-07
 
         verify(incomeRepository, times(1)).findAll();
+    }
+
+    @Test
+    void testUpdateIncome_shouldReturnUpdatedIncome() {
+        // Arrange
+        Long incomeId = 1L;
+        IncomeDTO incomeDTO = new IncomeDTO();
+        incomeDTO.setId(incomeId);
+        incomeDTO.setTitle("Salario");
+        incomeDTO.setAmount(5000.0);
+        incomeDTO.setDate(LocalDate.parse("2025-04-15"));
+        incomeDTO.setCategory("Trabajo");
+        incomeDTO.setDescription("Pago mensual del salario");
+
+        Income existingIncome = new Income();
+        existingIncome.setId(incomeId);
+        existingIncome.setTitle("Viejo Título");
+        existingIncome.setAmount(1000.0);
+        existingIncome.setDate(LocalDate.parse("2025-01-01"));
+        existingIncome.setCategory("Vieja Categoría");
+        existingIncome.setDescription("Descripción vieja");
+
+        when(incomeRepository.findById(incomeId)).thenReturn(Optional.of(existingIncome));
+        when(incomeRepository.save(any(Income.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
+        Income result = incomeService.updateIncome(incomeId, incomeDTO);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(incomeId, result.getId());
+        assertEquals("Salario", result.getTitle());
+        assertEquals("Trabajo", result.getCategory());
+        assertEquals(5000.0, result.getAmount());
+        assertEquals(LocalDate.parse("2025-04-15"), result.getDate());
+        assertEquals("Pago mensual del salario", result.getDescription());
+
+        verify(incomeRepository, times(1)).findById(incomeId);
+        verify(incomeRepository, times(1)).save(any(Income.class));
     }
 
 }

@@ -4,6 +4,7 @@ import com.EmaDeveloper.ExpenseTracker.dto.IncomeDTO;
 import com.EmaDeveloper.ExpenseTracker.entities.Income;
 import com.EmaDeveloper.ExpenseTracker.services.Income.IncomeService;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -61,5 +62,23 @@ public class IncomeController {
         }
         // if not empty, return the list of incomes
         return ResponseEntity.ok(incomes);
+    }
+
+    @Operation(summary = "Update an existing income")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Income updated successfully"),
+            @ApiResponse(responseCode = "404", description = "Income not found"),
+            @ApiResponse(responseCode = "500", description = "Error updating income")
+    })
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateIncome(@PathVariable Long id, @Valid @RequestBody IncomeDTO incomeDTO) {
+        try {
+            return ResponseEntity.ok(incomeService.updateIncome(id, incomeDTO));
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Income not found with id: " + id);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong");
+        }
     }
 }

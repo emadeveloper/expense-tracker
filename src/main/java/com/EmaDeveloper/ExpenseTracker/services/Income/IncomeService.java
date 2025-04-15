@@ -12,4 +12,6 @@ public interface IncomeService {
 
     Income postIncome(IncomeDTO incomeDTO);
 
+    Income updateIncome(Long id, IncomeDTO incomeDTO);
+
 }
