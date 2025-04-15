@@ -90,12 +90,29 @@ public class IncomeController {
             @ApiResponse(responseCode = "500", description = "Error updating income")
     })
 
-
-
     @PutMapping("/{id}")
     public ResponseEntity<?> updateIncome(@PathVariable Long id, @Valid @RequestBody IncomeDTO incomeDTO) {
         try {
             return ResponseEntity.ok(incomeService.updateIncome(id, incomeDTO));
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Income not found with id: " + id);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong");
+        }
+    }
+
+    @Operation(summary = "Delete an income")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Income deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Income not found"),
+            @ApiResponse(responseCode = "500", description = "Error deleting income")
+    })
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteIncome(@PathVariable Long id){
+        try {
+            incomeService.deleteIncome(id);
+            return ResponseEntity.ok("Income deleted successfully");
         } catch (EntityNotFoundException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Income not found with id: " + id);
         } catch (Exception e) {

@@ -180,4 +180,25 @@ class IncomeServiceImplTest {
         verify(incomeRepository, times(1)).save(any(Income.class));
     }
 
+    @Test
+    void deleteIncome_shouldDeleteIncome(){
+        // Arrange
+        Long incomeId = 1L;
+        Income income = Income.builder()
+                .id(incomeId)
+                .title("Salario")
+                .amount(5000.0)
+                .category("Trabajo")
+                .date(LocalDate.parse("2025-04-10"))
+                .description("Pago mensual del salario")
+                .build();
+
+        when(incomeRepository.findById(incomeId)).thenReturn(Optional.of(income));
+
+        // Act
+        incomeService.deleteIncome(incomeId);
+
+        // Assert
+        verify(incomeRepository, times(1)).deleteById(incomeId);
+    }
 }
