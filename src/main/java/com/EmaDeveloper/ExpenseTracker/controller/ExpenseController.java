@@ -10,13 +10,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
@@ -74,7 +77,7 @@ public class ExpenseController {
 
     // Endpoint to create a new expense
     @PostMapping
-    public ResponseEntity<?> postExpense(@RequestBody ExpenseDTO expenseDTO) {
+    public ResponseEntity<?> postExpense(@Valid @RequestBody ExpenseDTO expenseDTO) {
         Expense createdExpense = expenseService.postExpense(expenseDTO);
 
         return createdExpense != null

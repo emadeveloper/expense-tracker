@@ -6,6 +6,9 @@ import com.EmaDeveloper.ExpenseTracker.repository.IncomeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class IncomeServiceImpl implements IncomeService {
@@ -21,6 +24,15 @@ public class IncomeServiceImpl implements IncomeService {
         income.setDescription(incomeDTO.getDescription());
 
         return incomeRepository.save(income);
+    }
+
+    @Override
+    public List<IncomeDTO> getAllIncomes() {
+        return incomeRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparing(Income::getDate).reversed())
+                .map(Income::getIncomeDTO)
+                .toList();
     }
 
     @Override
