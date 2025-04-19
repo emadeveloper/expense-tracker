@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import java.util.Optional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -72,6 +73,69 @@ class StatsServiceImplTest {
 
         verify(incomeRepository).findByDateBetween(any(LocalDate.class), any(LocalDate.class));
         verify(expenseRepository).findByDateBetween(any(LocalDate.class), any(LocalDate.class));
+    }
+
+    @Test
+    void getStats_shouldReturnLatestIncomeAndExpenseStats() {
+        // Arrange
+        Income income1 = Income.builder()
+                .id(1L)
+                .title("Salario")
+                .amount(5000.0)
+                .category("Trabajo")
+                .date(LocalDate.of(2025, 4, 15))
+                .description("Pago mensual del salario")
+                .build();
+
+        Income income2 = Income.builder()
+                .id(2L)
+                .title("Salario2")
+                .amount(7000.0)
+                .category("Trabajo")
+                .date(LocalDate.of(2025, 4, 17))
+                .description("Pago mensual del salario")
+                .build();
+
+        Expense expense1 = Expense.builder()
+                .id(1L)
+                .title("Alquiler")
+                .amount(750.0)
+                .category("Gastos fijos")
+                .date(LocalDate.of(2025, 4, 15))
+                .description("Pago mensual del alquiler")
+                .build();
+
+        Expense expense2 = Expense.builder()
+                .id(2L)
+                .title("Alquiler")
+                .amount(1050.0)
+                .category("Gastos fijos")
+                .date(LocalDate.of(2025, 4, 18))
+                .description("Pago mensual del alquiler")
+                .build();
+
+
+        when(incomeRepository.sumAllAmounts()).thenReturn(12000.0);
+        when(expenseRepository.sumAllAmounts()).thenReturn(1800.0);
+        when(incomeRepository.findFirstByOrderByDateDesc()).thenReturn(Optional.ofNullable(income2));
+        when(expenseRepository.findFirstByOrderByDateDesc()).thenReturn(Optional.ofNullable(expense2));
+
+        // Act
+        var result = statsServiceImpl.getStats();
+
+        // Assert
+        assertNotNull(result);
+        assertNotNull(result.getLatestIncome());
+        assertNotNull(result.getLatestExpense());
+        assertEquals(12000.0, result.getIncome());
+        assertEquals(1800.0, result.getExpense());
+        assertEquals("Salario2", result.getLatestIncome().getTitle());
+        assertEquals("Alquiler", result.getLatestExpense().getTitle());
+
+        verify(incomeRepository).sumAllAmounts();
+        verify(expenseRepository).sumAllAmounts();
+        verify(incomeRepository).findFirstByOrderByDateDesc();
+        verify(expenseRepository).findFirstByOrderByDateDesc();
     }
 }
 

@@ -40,4 +40,22 @@ public class StatsController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(statsService.getChartData());
     }
+
+    @Operation(summary = "Get Stats")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Stats retrieved successfully"),
+            @ApiResponse(responseCode = "204", description = "No stats found"),
+            @ApiResponse(responseCode = "500", description = "Error retrieving stats")
+    })
+
+    @GetMapping
+    public ResponseEntity<?> getStats() {
+        if (statsService.getStats() == null) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving stats");
+        }
+        if (statsService.getStats().getIncome() == 0 && statsService.getStats().getExpense() == 0) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No stats found");
+        }
+        return ResponseEntity.ok(statsService.getStats());
+    }
 }
