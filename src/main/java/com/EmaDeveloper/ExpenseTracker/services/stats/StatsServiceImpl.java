@@ -10,7 +10,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.OptionalDouble;
 
 @Service
 @RequiredArgsConstructor
@@ -45,8 +48,25 @@ public class StatsServiceImpl implements StatsService{
         statsDTO.setIncome(totalIncome);
         statsDTO.setExpense(totalExpense);
 
+        statsDTO.setBalance(totalIncome - totalExpense);
+
         optionalIncome.ifPresent(statsDTO::setLatestIncome);
         optionalExpense.ifPresent(statsDTO::setLatestExpense);
+
+        List<Income> incomeList = Optional.of(incomeRepository.findAll()).orElse(Collections.emptyList());
+        List<Expense> expenseList = Optional.of(expenseRepository.findAll()).orElse(Collections.emptyList());
+
+        OptionalDouble minIncome = incomeList.stream().mapToDouble(Income::getAmount).min();
+        OptionalDouble maxIncome = incomeList.stream().mapToDouble(Income::getAmount).max();
+
+        OptionalDouble minExpense = expenseList.stream().mapToDouble(Expense::getAmount).min();
+        OptionalDouble maxExpense = expenseList.stream().mapToDouble(Expense::getAmount).max();
+
+        statsDTO.setMaxIncome(maxIncome.isPresent() ? maxIncome.getAsDouble() : null);
+        statsDTO.setMinIncome(minIncome.isPresent() ? minIncome.getAsDouble() : null);
+
+        statsDTO.setMinExpense(minExpense.isPresent() ? minExpense.getAsDouble() : null);
+        statsDTO.setMaxExpense(maxExpense.isPresent() ? maxExpense.getAsDouble() : null);
 
         return statsDTO;
     }

@@ -120,6 +120,9 @@ class StatsServiceImplTest {
         when(incomeRepository.findFirstByOrderByDateDesc()).thenReturn(Optional.ofNullable(income2));
         when(expenseRepository.findFirstByOrderByDateDesc()).thenReturn(Optional.ofNullable(expense2));
 
+        when(incomeRepository.findAll()).thenReturn(List.of(income1, income2));
+        when(expenseRepository.findAll()).thenReturn(List.of(expense1, expense2));
+
         // Act
         var result = statsServiceImpl.getStats();
 
@@ -131,6 +134,13 @@ class StatsServiceImplTest {
         assertEquals(1800.0, result.getExpense());
         assertEquals("Salario2", result.getLatestIncome().getTitle());
         assertEquals("Alquiler", result.getLatestExpense().getTitle());
+
+        assertEquals(5000.0, result.getMinIncome());
+        assertEquals(7000.0, result.getMaxIncome());
+
+        assertEquals(750.0, result.getMinExpense());
+        assertEquals(1050.0, result.getMaxExpense());
+
 
         verify(incomeRepository).sumAllAmounts();
         verify(expenseRepository).sumAllAmounts();
