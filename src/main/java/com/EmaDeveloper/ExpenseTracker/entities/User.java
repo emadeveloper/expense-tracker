@@ -1,11 +1,14 @@
 package com.EmaDeveloper.ExpenseTracker.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
+import jdk.jfr.Relational;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -23,9 +26,11 @@ public class User {
 
     private String password;
 
-    @Email
     private String email;
 
-    private String role;
-
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 }

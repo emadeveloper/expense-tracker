@@ -4,7 +4,6 @@ import com.EmaDeveloper.ExpenseTracker.dto.ExpenseDTO;
 import com.EmaDeveloper.ExpenseTracker.entities.Expense;
 import com.EmaDeveloper.ExpenseTracker.repository.ExpenseRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.Version;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
