@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponseDTO getUserById(Long id) {
@@ -40,28 +40,32 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDTO registerUser(UserRegistrationRequest registrationRequest) {
-        if (userRepository.existsByUsername(registrationRequest.getUsername())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
+        try {
+            if (userRepository.existsByUsername(registrationRequest.getUsername())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
+            }
+            if (userRepository.existsByEmail(registrationRequest.getEmail())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
+            }
+
+            User user = new User();
+            user.setUsername(registrationRequest.getUsername());
+            user.setEmail(registrationRequest.getEmail());
+            user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+
+            Role userRole = roleRepository.findByName("ROLE_USER")
+                    .orElseThrow(() -> new RuntimeException("Rol 'ROLE_USER' no encontrado"));
+            Set<Role> roles = new HashSet<>();
+            roles.add(userRole);
+            user.setRoles(roles);
+
+            User savedUser = userRepository.save(user);
+            return convertToUserResponseDTO(savedUser);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al registrar usuario");
         }
-        if (userRepository.existsByEmail(registrationRequest.getEmail())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
-        }
-
-        User user = new User();
-        user.setUsername(registrationRequest.getUsername());
-        user.setEmail(registrationRequest.getEmail());
-        user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
-
-
-        Role userRole = roleRepository.findByName("ROLE_USER")
-                .orElseThrow(() -> new RuntimeException("Rol 'ROLE_USER' no encontrado"));
-        Set<Role> roles = new HashSet<>();
-        roles.add(userRole);
-        user.setRoles(roles);
-
-        User savedUser = userRepository.save(user);
-        return convertToUserResponseDTO(savedUser);
     }
+
 
     @Override
     public UserResponseDTO updateUser(Long id, UserRegistrationRequest updatedUserRequest) {
