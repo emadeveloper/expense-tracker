@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginRequest {
+public class LoginRequestDTO {
 
     @NotNull(message = "Username or email cannot be blank")
     @Size(min = 5, max = 50, message = "Username must be between 5 and 50 characters")

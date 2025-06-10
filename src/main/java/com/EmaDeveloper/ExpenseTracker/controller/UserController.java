@@ -1,7 +1,7 @@
 package com.EmaDeveloper.ExpenseTracker.controller;
 
 import com.EmaDeveloper.ExpenseTracker.dto.UserResponseDTO;
-import com.EmaDeveloper.ExpenseTracker.entities.UserRegistrationRequest;
+import com.EmaDeveloper.ExpenseTracker.dto.UserRegistrationRequest;
 import com.EmaDeveloper.ExpenseTracker.services.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/api/v1/users")
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:5173/", allowCredentials = "true")
 @RequiredArgsConstructor
 @Validated
 public class UserController {

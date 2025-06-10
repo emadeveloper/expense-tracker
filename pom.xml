@@ -96,15 +96,19 @@
 			<artifactId>jjwt-api</artifactId>
 			<version>0.11.5</version>
 		</dependency>
+
+		<!-- Para firmar con HMAC (como HS256) -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-impl</artifactId>
 			<version>0.11.5</version>
 			<scope>runtime</scope>
 		</dependency>
+
+		<!-- Para decodificar Base64 y trabajar con JWT compactados -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt-jackson</artifactId>
+			<artifactId>jjwt-jackson</artifactId> <!-- o jjwt-gson si preferís Gson -->
 			<version>0.11.5</version>
 			<scope>runtime</scope>
 		</dependency>
@@ -114,7 +118,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.11.0</version> <!-- o la que uses -->
+				<version>3.11.0</version>
 				<configuration>
 					<annotationProcessorPaths>
 						<path>

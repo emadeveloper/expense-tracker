@@ -1,9 +1,8 @@
 package com.EmaDeveloper.ExpenseTracker.services.user;
 
+import com.EmaDeveloper.ExpenseTracker.dto.UserRegistrationRequest;
 import com.EmaDeveloper.ExpenseTracker.dto.UserResponseDTO;
-import com.EmaDeveloper.ExpenseTracker.entities.UserRegistrationRequest;
-
-import java.util.List;
+import jakarta.validation.Valid;
 
 public interface UserService {
 
@@ -11,9 +10,9 @@ public interface UserService {
 
     UserResponseDTO getUserByUsername(String username);
 
-    UserResponseDTO registerUser(UserRegistrationRequest registrationRequest);
+    UserResponseDTO registerUser(com.EmaDeveloper.ExpenseTracker.dto.@Valid UserRegistrationRequest registrationRequest);
 
-    UserResponseDTO updateUser(Long id, UserRegistrationRequest updatedUserRequest);
+    UserResponseDTO updateUser(Long id, @Valid UserRegistrationRequest updatedUserRequest);
 
     void deleteUser(Long id);
 }

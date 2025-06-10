@@ -15,11 +15,15 @@ public class UserRegistrationRequest {
     @Size(min = 5, max = 50, message = "Username must be between 5 and 50 characters")
     private String username;
 
+    @Email(message = "Email should be valid")
+    @NotNull(message = "Email cannot be empty")
+    private String email;
+
     @NotNull(message = "Password cannot be empty")
     @Size(min = 8, max = 20, message = "Password must be between 8 and 20 characters")
     private String password;
 
-    @Email(message = "Email should be valid")
-    @NotNull(message = "Email cannot be empty")
-    private String email;
+    @NotNull(message = "Password cannot be empty")
+    @Size(min = 8, max = 20, message = "Password must be between 8 and 20 characters")
+    private String confirmPassword;
 }

@@ -1,11 +1,12 @@
 package com.EmaDeveloper.ExpenseTracker.services.user;
 
+import com.EmaDeveloper.ExpenseTracker.dto.UserRegistrationRequest;
 import com.EmaDeveloper.ExpenseTracker.dto.UserResponseDTO;
 import com.EmaDeveloper.ExpenseTracker.entities.Role;
 import com.EmaDeveloper.ExpenseTracker.entities.User;
-import com.EmaDeveloper.ExpenseTracker.entities.UserRegistrationRequest;
 import com.EmaDeveloper.ExpenseTracker.repository.RoleRepository;
 import com.EmaDeveloper.ExpenseTracker.repository.UserRepository;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,7 +40,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDTO registerUser(UserRegistrationRequest registrationRequest) {
+    public UserResponseDTO registerUser(com.EmaDeveloper.ExpenseTracker.dto.@Valid UserRegistrationRequest registrationRequest) {
         try {
             if (userRepository.existsByUsername(registrationRequest.getUsername())) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
@@ -68,7 +69,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserResponseDTO updateUser(Long id, UserRegistrationRequest updatedUserRequest) {
+    public UserResponseDTO updateUser(Long id, @Valid UserRegistrationRequest updatedUserRequest) {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
