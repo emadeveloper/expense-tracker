@@ -21,7 +21,7 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:5173/", allowCredentials = "true")
 @RequestMapping("/api/income")
 public class IncomeController {
     private final IncomeService incomeService;

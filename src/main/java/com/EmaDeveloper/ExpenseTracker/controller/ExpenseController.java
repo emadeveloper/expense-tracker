@@ -22,7 +22,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:5173/", allowCredentials = "true")
 @RequestMapping("/api/v1/expense")
 public class ExpenseController {
     private final ExpenseService expenseService;

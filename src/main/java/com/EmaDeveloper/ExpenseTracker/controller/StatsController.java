@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:5173/", allowCredentials = "true")
 @RequestMapping("api/stats")
 public class StatsController {
 
