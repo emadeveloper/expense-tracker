@@ -10,7 +10,7 @@ public interface UserService {
 
     UserResponseDTO getUserByUsername(String username);
 
-    UserResponseDTO registerUser(com.EmaDeveloper.ExpenseTracker.dto.@Valid UserRegistrationRequest registrationRequest);
+    UserResponseDTO registerUser(@Valid UserRegistrationRequest registrationRequest);
 
     UserResponseDTO updateUser(Long id, @Valid UserRegistrationRequest updatedUserRequest);
 

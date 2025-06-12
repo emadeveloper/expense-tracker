@@ -51,19 +51,7 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @Operation(summary = "Register a new user")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "User registered successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid input data"),
-    })
-    // endpoint to register a new user
-    @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> registerUser(
-            @Parameter(description = "User registration request", required = true)
-            @Valid @RequestBody UserRegistrationRequest registrationRequest) {
-        UserResponseDTO user = userService.registerUser(registrationRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(user);
-    }
+
 
     @Operation(summary = "Update user by ID")
     @ApiResponses(value = {

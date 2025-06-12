@@ -3,12 +3,16 @@ package com.EmaDeveloper.ExpenseTracker.controller;
 import com.EmaDeveloper.ExpenseTracker.dto.AuthResponseDTO;
 import com.EmaDeveloper.ExpenseTracker.dto.LoginRequestDTO;
 import com.EmaDeveloper.ExpenseTracker.dto.UserRegistrationRequest;
+import com.EmaDeveloper.ExpenseTracker.dto.UserResponseDTO;
 import com.EmaDeveloper.ExpenseTracker.services.auth.AuthService;
+import com.EmaDeveloper.ExpenseTracker.services.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -21,17 +25,21 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+    private final UserService userService;
 
 
     @Operation(summary = "Register a new user")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User registered successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid registration request"),
-            @ApiResponse(responseCode = "500", description = "Error registering user")
+            @ApiResponse(responseCode = "201", description = "User registered successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
     })
+    // endpoint to register a new user
     @PostMapping("/register")
-    public ResponseEntity<AuthResponseDTO> registerUser(@Valid @RequestBody UserRegistrationRequest request){
-        return ResponseEntity.ok(authService.registerUser(request));
+    public ResponseEntity<UserResponseDTO> registerUser(
+            @Parameter(description = "User registration request", required = true)
+            @Valid @RequestBody UserRegistrationRequest registrationRequest) {
+        UserResponseDTO user = userService.registerUser(registrationRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
     @Operation(summary = "Login a user")
