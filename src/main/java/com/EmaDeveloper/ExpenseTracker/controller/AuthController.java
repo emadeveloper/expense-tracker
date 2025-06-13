@@ -48,6 +48,7 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "Invalid login request"),
             @ApiResponse(responseCode = "500", description = "Error logging in user")
     })
+    // Endpoint to log a user
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> loginUser(@Valid @RequestBody LoginRequestDTO request){
         return ResponseEntity.ok(authService.loginUser(request));

@@ -10,10 +10,16 @@ import com.EmaDeveloper.ExpenseTracker.entities.User;
 import com.EmaDeveloper.ExpenseTracker.repository.RoleRepository;
 import com.EmaDeveloper.ExpenseTracker.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,6 +32,7 @@ public class AuthServiceImpl implements AuthService{
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
     @Override
     public AuthResponseDTO registerUser(UserRegistrationRequest request) {
@@ -76,6 +83,41 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public AuthResponseDTO loginUser(LoginRequestDTO request) {
-        return null;
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getUsername(), // <-- Usa el campo que tu LoginRequestDTO tiene para el identificador (username/email)
+                            request.getPassword()
+                    )
+            );
+        } catch (AuthenticationException e) {
+            throw new BadCredentialsException("Credenciales inválidas (username o password incorrectos)");
+            // Puedes lanzar un mensaje más genérico para no dar pistas a atacantes
+            // throw new RuntimeException("Credenciales inválidas");
+        }
+
+        User user = userRepository.findByUsernameOrEmail(request.getUsername(), request.getUsername()) // Usa el método que busca por username O email
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado después de autenticación exitosa. Esto no debería pasar.")); // Fallback, ya debería haber sido encontrado por CustomUserDetailsService
+
+        // Generate JWT with extra claims (claims are optional, and they can be used to include additional information in the token)
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("roles", user.getRoles().stream().map(Role::getName).collect(Collectors.toList()));
+        // If you need to include the user ID in the token, you can add it as well
+        // extraClaims.put("userId", user.getId());
+        String jwt = jwtService.generateTokenExtraClaims(extraClaims, user); // Using the method that accepts extra claims
+
+        // 4. Create response DTO
+        Set<String> roleNames = user.getRoles().stream()
+                .map(Role::getName)
+                .collect(Collectors.toSet());
+
+        UserResponseDTO userResponse = new UserResponseDTO(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                roleNames
+        );
+
+        return new AuthResponseDTO(jwt, "Bearer", userResponse);
     }
 }
