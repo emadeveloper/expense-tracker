@@ -1,6 +1,7 @@
 package com.EmaDeveloper.ExpenseTracker.config;
 
 import com.EmaDeveloper.ExpenseTracker.security.CustomUserDetailsService;
+import com.EmaDeveloper.ExpenseTracker.security.JwtAuthenticationFilter; // <-- ¡IMPORTA TU FILTRO!
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,35 +12,39 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetailsService; // No es estrictamente necesaria si inyectas CustomUserDetailsService
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; // No es estrictamente necesaria si usas PasswordEncoderConfig
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter; // <-- ¡IMPORTA ESTO!
 
-@AllArgsConstructor
 @Configuration
+@AllArgsConstructor
 public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
+    private final JwtAuthenticationFilter jwtAuthFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Disable CSRF protection for simplicity
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // Allow public access to the authentication endpoints
-                        .requestMatchers("/api/v1/auth/**").permitAll()
-                        // All other requests require authentication
+                        .requestMatchers(
+                                "/api/v1/auth/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                // TODO: Implement JWT authentication filter
-                // .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .authenticationProvider(authenticationProvider()) // Define the authentication provider
-                .httpBasic(Customizer.withDefaults()); //Optional: Use HTTP Basic authentication
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .authenticationProvider(authenticationProvider())
+                .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }
@@ -49,7 +54,6 @@ public class SecurityConfig {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder);
-
         return authProvider;
     }
 

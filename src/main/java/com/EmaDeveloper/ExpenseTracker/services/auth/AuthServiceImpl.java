@@ -64,7 +64,7 @@ public class AuthServiceImpl implements AuthService{
 
         userRepository.save(user);
 
-        String jwt = jwtService.generateTokenExtraClaims(user);
+        String jwt = jwtService.generateToken(user);
 
         Set<String> roleNames = user.getRoles().stream()
                 .map(Role::getName)
@@ -104,7 +104,7 @@ public class AuthServiceImpl implements AuthService{
         extraClaims.put("roles", user.getRoles().stream().map(Role::getName).collect(Collectors.toList()));
         // If you need to include the user ID in the token, you can add it as well
         // extraClaims.put("userId", user.getId());
-        String jwt = jwtService.generateTokenExtraClaims(extraClaims, user); // Using the method that accepts extra claims
+        String jwt = jwtService.generateToken(extraClaims, user); // Using the method that accepts extra claims
 
         // 4. Create response DTO
         Set<String> roleNames = user.getRoles().stream()

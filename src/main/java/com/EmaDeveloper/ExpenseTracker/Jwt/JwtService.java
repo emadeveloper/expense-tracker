@@ -11,16 +11,13 @@ import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashMap; // Para la sobrecarga de generateToken
+import java.util.Map;   // Para la sobrecarga de generateToken
 import java.util.function.Function;
 
 @Service
 public class JwtService {
-    /**
-     * Clave secreta para firmar los tokens JWT.
-     * Esta clave debe ser segura y no debe ser expuesta públicamente.
-     */
+
     @Value("${application.security.jwt.secret-key}")
     private String secretKey;
 
@@ -28,9 +25,9 @@ public class JwtService {
     private long jwtExpiration; // Tiempo de expiración en milisegundos
 
     /**
-     * Extrae el nombre de usuario del token JWT.
+     * Extrae el nombre de usuario (subject) del token JWT.
      * @param token El token JWT.
-     * @return El nombre de usuario.
+     * @return El nombre de usuario (subject).
      */
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -50,12 +47,12 @@ public class JwtService {
     }
 
     /**
-     * Genera un token JWT para un usuario.
+     * Genera un token JWT para un usuario con claims por defecto (solo el subject).
      * @param userDetails Detalles del usuario.
      * @return El token JWT generado.
      */
-    public String generateTokenExtraClaims(UserDetails userDetails) {
-        return generateTokenExtraClaims(new HashMap<>(), userDetails);
+    public String generateToken(UserDetails userDetails) {
+        return generateToken(new HashMap<>(), userDetails);
     }
 
     /**
@@ -64,7 +61,7 @@ public class JwtService {
      * @param userDetails Detalles del usuario.
      * @return El token JWT generado.
      */
-    public String generateTokenExtraClaims(
+    public String generateToken(
             Map<String, Object> extraClaims,
             UserDetails userDetails
     ) {
@@ -79,13 +76,17 @@ public class JwtService {
     }
 
     /**
-     * Valida un token JWT.
+     * Valida si un token JWT es válido para un UserDetails dado.
+     * Verifica que el nombre de usuario del token coincida con el UserDetails
+     * y que el token no haya expirado.
      * @param token El token JWT a validar.
-     * @param userDetails Detalles del usuario para comparar con el token.
+     * @param userDetails El UserDetails con el que se compara el token.
      * @return true si el token es válido, false en caso contrario.
      */
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
+        final String username = extractUsername(token); // Extrae el username/subject del token
+        // Compara el username extraído del token con el username del UserDetails,
+        // y verifica que el token no haya expirado.
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
@@ -114,14 +115,15 @@ public class JwtService {
      */
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(getSignInKey()) // Establece la clave de firma
+                .setSigningKey(getSignInKey()) // Establece la clave de firma para la verificación
                 .build()
                 .parseClaimsJws(token) // Parsea el token JWT
-                .getBody(); // Obtiene los claims
+                .getBody(); // Obtiene todos los claims del token
     }
+
     /**
-     * Obtiene la clave de firma (Key) a partir de la clave secreta en Base64.
-     * @return La clave de firma.
+     * Obtiene la clave de firma utilizada para firmar los tokens JWT.
+     * @return La clave de firma como un objeto Key.
      */
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
