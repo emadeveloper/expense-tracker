@@ -2,7 +2,6 @@ package com.EmaDeveloper.ExpenseTracker.controller;
 
 import com.EmaDeveloper.ExpenseTracker.dto.ExpenseDTO;
 import com.EmaDeveloper.ExpenseTracker.entities.Expense;
-import com.EmaDeveloper.ExpenseTracker.repository.ExpenseRepository;
 import com.EmaDeveloper.ExpenseTracker.services.expense.ExpenseService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +23,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:5173/", allowCredentials = "true")
-@RequestMapping("/api/v1/expense")
+@RequestMapping("/api/v1/expenses")
 public class ExpenseController {
     private final ExpenseService expenseService;
 
@@ -36,7 +36,9 @@ public class ExpenseController {
 
     // Endpoint to get all expenses
     @GetMapping("/all")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> getAllExpenses() {
+
         List<Expense> expenses = expenseService.getAllExpenses();
         // Check if the list is null
         if (expenses == null) {
@@ -59,6 +61,7 @@ public class ExpenseController {
 
     // Endpoint to get an expense by ID
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> getExpenseById(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(expenseService.getExpenseById(id));
@@ -77,6 +80,7 @@ public class ExpenseController {
 
     // Endpoint to create a new expense
     @PostMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> postExpense(@Valid @RequestBody ExpenseDTO expenseDTO) {
         Expense createdExpense = expenseService.postExpense(expenseDTO);
 
@@ -94,6 +98,7 @@ public class ExpenseController {
 
     // Endpoint to update an expense by ID
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> updateExpense(@PathVariable Long id, @RequestBody ExpenseDTO expenseDTO) {
         try {
             Expense updatedExpense = expenseService.updateExpense(id, expenseDTO);
@@ -114,6 +119,7 @@ public class ExpenseController {
 
     // Endpoint to delete an expense by ID
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteExpense(@PathVariable Long id) {
         try {
             expenseService.deleteExpense(id);

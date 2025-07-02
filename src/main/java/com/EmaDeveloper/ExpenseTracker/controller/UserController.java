@@ -9,8 +9,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +30,7 @@ public class UserController {
 
     // endpoint to get user by ID
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponseDTO> getUserById(
             @Parameter(description = "ID of the user to be retrieved", required = true)
             @PathVariable Long id){
@@ -44,6 +45,7 @@ public class UserController {
     })
     // endpoint to get user by username
     @GetMapping("/username/{username}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponseDTO> getUserByUsername(
             @Parameter(description = "Username to retrieve", required = true)
             @PathVariable String username) {
@@ -60,6 +62,7 @@ public class UserController {
     })
     // endpoint to update user by ID
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity <UserResponseDTO> updateUser(
             @Parameter(description = "ID of the user to be updated", required = true)
             @PathVariable Long id,
@@ -76,6 +79,7 @@ public class UserController {
     })
     // endpoint to delete user by ID
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteUser(
             @Parameter(description = "ID of the user to be deleted", required = true)
             @PathVariable Long id) {

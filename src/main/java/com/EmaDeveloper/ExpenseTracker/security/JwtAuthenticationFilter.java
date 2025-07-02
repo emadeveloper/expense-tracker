@@ -52,8 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userIdentifier);
 
             // 6. Validate the JWT token
-            // Asumo que tu validateToken espera UserDetails. Si espera String, cambia a userDetails.getUsername()
-            if (jwtService.isTokenValid(jwt, userDetails)) { // <-- ¡IMPORTANTE! Revisa la firma de tu validateToken
+            if (jwtService.isTokenValid(jwt, userDetails)) {
 
                 // 7. If the token is valid, create an authentication object
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
@@ -69,11 +68,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 // 9. Set the authentication object in the SecurityContextHolder
                 // This "authenticates" the user for the current request
-                SecurityContextHolder.getContext().setAuthentication(authToken); // <-- ¡AÑADE ESTA LÍNEA!
+                SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
 
         // 10. Continue with the filter chain (to other filters or the DispatcherServlet)
-        filterChain.doFilter(request, response); // <-- ¡AÑADE ESTA LÍNEA!
+        filterChain.doFilter(request, response);
     }
 }

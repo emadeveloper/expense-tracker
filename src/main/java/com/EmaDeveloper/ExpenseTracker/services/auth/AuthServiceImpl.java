@@ -86,23 +86,22 @@ public class AuthServiceImpl implements AuthService{
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            request.getUsername(), // <-- Usa el campo que tu LoginRequestDTO tiene para el identificador (username/email)
+                            request.getUsername(),
                             request.getPassword()
                     )
             );
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Credenciales inválidas (username o password incorrectos)");
-            // Puedes lanzar un mensaje más genérico para no dar pistas a atacantes
             // throw new RuntimeException("Credenciales inválidas");
         }
 
-        User user = userRepository.findByUsernameOrEmail(request.getUsername(), request.getUsername()) // Usa el método que busca por username O email
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado después de autenticación exitosa. Esto no debería pasar.")); // Fallback, ya debería haber sido encontrado por CustomUserDetailsService
+        User user = userRepository.findByUsernameOrEmail(request.getUsername(), request.getUsername())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado después de autenticación exitosa. Esto no debería pasar."));
 
         // Generate JWT with extra claims (claims are optional, and they can be used to include additional information in the token)
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put("roles", user.getRoles().stream().map(Role::getName).collect(Collectors.toList()));
-        // If you need to include the user ID in the token, you can add it as well
+        // If ID needed in the token, you can add it as well
         // extraClaims.put("userId", user.getId());
         String jwt = jwtService.generateToken(extraClaims, user); // Using the method that accepts extra claims
 

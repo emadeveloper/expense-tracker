@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +35,7 @@ public class IncomeController {
     })
 
     @GetMapping("/all")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> getAllIncomes() {
         List<IncomeDTO> incomes = incomeService.getAllIncomes();
 
@@ -57,6 +59,7 @@ public class IncomeController {
     })
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> getIncomeById(@PathVariable Long id){
         try {
             Income income = incomeService.getIncomeById(id);
@@ -75,6 +78,7 @@ public class IncomeController {
     })
 
     @PostMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> postIncome(@Valid @RequestBody IncomeDTO incomeDTO) {
         Income createdIncome = incomeService.postIncome(incomeDTO);
 
@@ -91,6 +95,7 @@ public class IncomeController {
     })
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> updateIncome(@PathVariable Long id, @Valid @RequestBody IncomeDTO incomeDTO) {
         try {
             return ResponseEntity.ok(incomeService.updateIncome(id, incomeDTO));
@@ -109,6 +114,7 @@ public class IncomeController {
     })
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteIncome(@PathVariable Long id){
         try {
             incomeService.deleteIncome(id);

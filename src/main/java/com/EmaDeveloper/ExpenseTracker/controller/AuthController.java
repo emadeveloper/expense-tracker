@@ -51,6 +51,14 @@ public class AuthController {
     // Endpoint to log a user
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> loginUser(@Valid @RequestBody LoginRequestDTO request){
-        return ResponseEntity.ok(authService.loginUser(request));
+        try {
+            AuthResponseDTO response = authService.loginUser(request);
+            System.out.println("AUTH SUCCESS - Token generated");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            System.out.println("AUTH FAILED - Error: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
     }
 }
