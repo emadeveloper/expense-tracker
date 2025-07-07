@@ -1,8 +1,9 @@
 package com.EmaDeveloper.ExpenseTracker.services.expense;
 
-import com.EmaDeveloper.ExpenseTracker.dto.ExpenseDTO;
-import com.EmaDeveloper.ExpenseTracker.entities.Expense;
-import com.EmaDeveloper.ExpenseTracker.repository.ExpenseRepository;
+import com.EmaDeveloper.ExpenseTracker.expenses.dto.ExpenseRequestDTO;
+import com.EmaDeveloper.ExpenseTracker.expenses.entities.Expense;
+import com.EmaDeveloper.ExpenseTracker.expenses.services.ExpenseServiceImpl;
+import com.EmaDeveloper.ExpenseTracker.expenses.repository.ExpenseRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -32,7 +33,7 @@ class ExpenseServiceImplTest {
     @Test
     void testPostExpense() {
         // Arrange
-        ExpenseDTO expenseDTO = new ExpenseDTO();
+        ExpenseRequestDTO expenseDTO = new ExpenseRequestDTO();
         expenseDTO.setTitle("Gimnasio");
         expenseDTO.setAmount(3000.0);
         expenseDTO.setCategory("Salud");
@@ -146,7 +147,7 @@ class ExpenseServiceImplTest {
         expense.setDate(LocalDate.parse("2025-04-13"));
         expense.setDescription("Gym monthly fee");
 
-        ExpenseDTO expenseDTO = new ExpenseDTO();
+        ExpenseRequestDTO expenseDTO = new ExpenseRequestDTO();
         expenseDTO.setTitle("Updated Gym");
         expenseDTO.setAmount(3500.0);
         expenseDTO.setCategory("Health");

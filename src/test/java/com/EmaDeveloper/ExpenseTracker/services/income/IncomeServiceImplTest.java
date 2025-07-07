@@ -1,9 +1,9 @@
 package com.EmaDeveloper.ExpenseTracker.services.income;
 
-import com.EmaDeveloper.ExpenseTracker.dto.IncomeDTO;
-import com.EmaDeveloper.ExpenseTracker.entities.Income;
-import com.EmaDeveloper.ExpenseTracker.repository.IncomeRepository;
-import com.EmaDeveloper.ExpenseTracker.services.Income.IncomeServiceImpl;
+import com.EmaDeveloper.ExpenseTracker.incomes.dto.IncomeDTO;
+import com.EmaDeveloper.ExpenseTracker.incomes.entities.Income;
+import com.EmaDeveloper.ExpenseTracker.incomes.respository.IncomeRepository;
+import com.EmaDeveloper.ExpenseTracker.incomes.services.IncomeServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

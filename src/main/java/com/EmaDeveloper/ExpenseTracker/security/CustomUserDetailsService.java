@@ -1,6 +1,6 @@
 package com.EmaDeveloper.ExpenseTracker.security;
 
-import com.EmaDeveloper.ExpenseTracker.repository.UserRepository;
+import com.EmaDeveloper.ExpenseTracker.users.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
