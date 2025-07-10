@@ -1,6 +1,6 @@
 package com.EmaDeveloper.ExpenseTracker.security;
 
-import com.EmaDeveloper.ExpenseTracker.Jwt.JwtService;
+import com.EmaDeveloper.ExpenseTracker.jwt.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

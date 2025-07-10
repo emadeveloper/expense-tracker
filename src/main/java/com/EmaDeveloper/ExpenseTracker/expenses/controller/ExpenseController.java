@@ -3,6 +3,7 @@ package com.EmaDeveloper.ExpenseTracker.expenses.controller;
 import com.EmaDeveloper.ExpenseTracker.expenses.dto.ExpenseRequestDTO;
 import com.EmaDeveloper.ExpenseTracker.expenses.dto.ExpenseResponseDTO;
 import com.EmaDeveloper.ExpenseTracker.expenses.entities.Expense;
+import com.EmaDeveloper.ExpenseTracker.expenses.mapper.ExpenseMapper;
 import com.EmaDeveloper.ExpenseTracker.expenses.services.ExpenseService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -65,7 +66,7 @@ public class ExpenseController {
     @GetMapping("/user")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> getAllExpensesByCurrentUser() {
-        List<Expense> expenses = expenseService.getAllExpensesByCurrentUser();
+        List<ExpenseResponseDTO> expenses = expenseService.getAllExpensesByCurrentUser();
 
         if (expenses.isEmpty()){
             return ResponseEntity.noContent().build();

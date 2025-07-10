@@ -1,6 +1,6 @@
 package com.EmaDeveloper.ExpenseTracker.auth.services;
 
-import com.EmaDeveloper.ExpenseTracker.Jwt.JwtService;
+import com.EmaDeveloper.ExpenseTracker.jwt.JwtService;
 import com.EmaDeveloper.ExpenseTracker.auth.dto.AuthResponseDTO;
 import com.EmaDeveloper.ExpenseTracker.auth.dto.LoginRequestDTO;
 import com.EmaDeveloper.ExpenseTracker.users.dto.UserRegistrationRequest;

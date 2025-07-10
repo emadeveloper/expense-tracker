@@ -3,6 +3,7 @@ package com.EmaDeveloper.ExpenseTracker.expenses.services;
 import com.EmaDeveloper.ExpenseTracker.expenses.dto.ExpenseRequestDTO;
 import com.EmaDeveloper.ExpenseTracker.expenses.dto.ExpenseResponseDTO;
 import com.EmaDeveloper.ExpenseTracker.expenses.entities.Expense;
+import com.EmaDeveloper.ExpenseTracker.expenses.mapper.ExpenseMapper;
 import com.EmaDeveloper.ExpenseTracker.users.entities.User;
 import com.EmaDeveloper.ExpenseTracker.expenses.repository.ExpenseRepository;
 import com.EmaDeveloper.ExpenseTracker.users.repository.UserRepository;
@@ -45,11 +46,15 @@ public class ExpenseServiceImpl implements ExpenseService {
                 .toList();
     }
 
+    // method to get all expenses by the current user
     @Override
-    public List<Expense> getAllExpensesByCurrentUser() {
+    public List<ExpenseResponseDTO> getAllExpensesByCurrentUser() {
         User user = authService.getCurrentUser();
 
-        return expenseRepository.findAllByUserOrderByDateDesc(user);
+        return expenseRepository.findAllByUserOrderByDateDesc(user)
+                .stream()
+                .map(ExpenseMapper::toResponseDTO)
+                .toList();
     }
 
     // method to get an expense by id

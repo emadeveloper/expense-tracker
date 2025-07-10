@@ -1,5 +1,6 @@
 package com.EmaDeveloper.ExpenseTracker.expenses.dto;
 
+import com.EmaDeveloper.ExpenseTracker.users.dto.UserSummaryDTO;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -12,4 +13,5 @@ public class ExpenseResponseDTO {
     private String category;
     private LocalDate date;
     private Double amount;
+    private UserSummaryDTO user;
 }

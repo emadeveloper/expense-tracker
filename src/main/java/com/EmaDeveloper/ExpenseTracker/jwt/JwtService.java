@@ -1,4 +1,4 @@
-package com.EmaDeveloper.ExpenseTracker.Jwt;
+package com.EmaDeveloper.ExpenseTracker.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
