@@ -1,20 +1,22 @@
 package com.EmaDeveloper.ExpenseTracker.expenses.mapper;
 
+import com.EmaDeveloper.ExpenseTracker.expenses.dto.ExpenseRequestDTO;
 import com.EmaDeveloper.ExpenseTracker.expenses.dto.ExpenseResponseDTO;
 import com.EmaDeveloper.ExpenseTracker.expenses.entities.Expense;
 import com.EmaDeveloper.ExpenseTracker.users.dto.UserSummaryDTO;
+import com.EmaDeveloper.ExpenseTracker.users.entities.User;
+
+import java.time.LocalDate;
 
 public class ExpenseMapper {
-    public static  Expense toEntity(ExpenseResponseDTO expenseResponseDTO){
+    public static  Expense toEntity(ExpenseRequestDTO expenseRequestDTO, User user){
         Expense expense = new Expense();
-        expense.setId(expenseResponseDTO.getId());
-        expense.setDate(expenseResponseDTO.getDate());
-        expense.setTitle(expenseResponseDTO.getTitle());
-        expense.setCategory(expenseResponseDTO.getCategory());
-        expense.setAmount(expenseResponseDTO.getAmount());
-        expense.setDescription(expenseResponseDTO.getDescription());
-
-        UserSummaryDTO userSummary = expenseResponseDTO.getUser();
+        expense.setDate(expenseRequestDTO.getDate() != null ? expenseRequestDTO.getDate() : LocalDate.now());
+        expense.setTitle(expenseRequestDTO.getTitle());
+        expense.setCategory(expenseRequestDTO.getCategory());
+        expense.setAmount(expenseRequestDTO.getAmount());
+        expense.setDescription(expenseRequestDTO.getDescription());
+        expense.setUser(user);
 
         return expense;
     }

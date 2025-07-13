@@ -12,37 +12,22 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class ExpenseServiceImpl implements ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final UserRepository userRepository;
     private final AuthService authService;
 
-    // method to save or update an expense
-    private Expense saveOrUpdateExpense(Expense expense, ExpenseRequestDTO expenseDTO) {
-        expense.setId(expense.getId());
-        expense.setTitle(expenseDTO.getTitle());
-        expense.setDate(expenseDTO.getDate());
-        expense.setCategory(expenseDTO.getCategory());
-        expense.setAmount(expenseDTO.getAmount());
-        expense.setDescription(expenseDTO.getDescription());
-
-        expense.setUser(authService.getCurrentUser());
-
-        return expenseRepository.save(expense);
-    }
-
     // method to get all expenses
     @Override
-    public List<Expense> getAllExpenses() {
+    public List<ExpenseResponseDTO> getAllExpenses() {
         return expenseRepository.findAll()
                 .stream()
-                .sorted(Comparator.comparing(Expense::getDate).reversed())
+                .map(ExpenseMapper::toResponseDTO)
                 .toList();
     }
 
@@ -59,53 +44,55 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     // method to get an expense by id
     @Override
-    public Expense getExpenseById(Long id) {
-        Optional<Expense> optionalExpense = expenseRepository.findById(id);
-        if (optionalExpense.isPresent()) {
-            return optionalExpense.get();
-        } else {
-            throw new RuntimeException("Expense not found with id: " + id);
-        }
+    public ExpenseResponseDTO getExpenseById(Long id) {
+        Expense expense = expenseRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Expense not found with id: " + id));
+
+        return ExpenseMapper.toResponseDTO(expense);
     }
 
     // method to post a new expense
     @Override
     public ExpenseResponseDTO postExpense(ExpenseRequestDTO expenseDTO) {
-        Expense savedExpense = saveOrUpdateExpense(new Expense(), expenseDTO);
+        User user = authService.getCurrentUser();
+        Expense expense = ExpenseMapper.toEntity(expenseDTO, user);
 
-        // Convert the saved expense to a response DTO
-        ExpenseResponseDTO response = new ExpenseResponseDTO();
-        response.setId(savedExpense.getId());
-        response.setTitle(savedExpense.getTitle());
-        response.setDescription(savedExpense.getDescription());
-        response.setDate(savedExpense.getDate());
-        response.setCategory(savedExpense.getCategory());
-        response.setAmount(savedExpense.getAmount());
+        Expense savedExpense = expenseRepository.save(expense);
 
-        return response;
+        return ExpenseMapper.toResponseDTO(savedExpense);
     }
 
     // method to update an expense
     @Override
-    public Expense updateExpense(Long id, ExpenseRequestDTO expenseDTO) {
-        Optional<Expense> optionalExpense = expenseRepository.findById(id);
-        if (optionalExpense.isPresent()) {
-            Expense expense = optionalExpense.get();
-            return saveOrUpdateExpense(expense, expenseDTO);
-        } else {
-            throw new EntityNotFoundException("Expense not found with id: " + id);
-        }
+    public ExpenseResponseDTO updateExpense(Long id, ExpenseRequestDTO expenseDTO) {
+        Expense expense = expenseRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Expense not found with id: " + id));
+
+        expense.setTitle(expenseDTO.getTitle());
+        expense.setDescription(expenseDTO.getDescription());
+        expense.setDate(expenseDTO.getDate());
+        expense.setCategory(expenseDTO.getCategory());
+        expense.setAmount(expenseDTO.getAmount());
+
+        Expense updatedExpense = expenseRepository.save(expense);
+
+        return ExpenseMapper.toResponseDTO(updatedExpense);
     }
 
     // Method to delete an expense
     @Override
     public void deleteExpense(Long id) {
-        // Optionally, check if the expense was deleted successfully
-        Optional<Expense> optionalExpense = expenseRepository.findById(id);
-        if (optionalExpense.isPresent()) {
-            expenseRepository.deleteById(id);
-        } else {
-            throw new RuntimeException("Expense not found with id: " + id);
+        if (!expenseRepository.existsById(id)) {
+            throw new EntityNotFoundException("Expense not found with id: " + id);
         }
+        // Optionally, you can check if the expense belongs to the current user
+        User currentUser = authService.getCurrentUser();
+        Optional<Expense> expenseOptional = expenseRepository.findById(id);
+
+        if (expenseOptional.isPresent() && !expenseOptional.get().getUser().equals(currentUser)) {
+            throw new SecurityException("You do not have permission to delete this expense");
+        }
+         // Delete the expense
+     expenseRepository.deleteById(id);
     }
 }

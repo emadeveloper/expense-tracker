@@ -36,21 +36,11 @@ public class ExpenseController {
             @ApiResponse(responseCode = "500", description = "Error retrieving expenses")
     })
 
-    // Endpoint to get all expenses
-    @GetMapping("/all")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> getAllExpenses() {
+    // Endpoint to get all expenses (only accessible by ADMIN)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<ExpenseResponseDTO>> getAllExpenses() {
 
-        List<Expense> expenses = expenseService.getAllExpenses();
-        // Check if the list is null
-        if (expenses == null) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving expenses");
-        }
-        // Check if the list is empty
-        if (expenses.isEmpty()) {
-            return ResponseEntity.status((HttpStatus.NO_CONTENT)).body("No expenses found");
-        }
-        // If not empty, return the list of expenses
+        List<ExpenseResponseDTO> expenses = expenseService.getAllExpenses();
         return ResponseEntity.ok(expenses);
     }
 
@@ -59,18 +49,14 @@ public class ExpenseController {
             @ApiResponse(responseCode = "200", description = "Expenses retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "No expenses found for the user"),
             @ApiResponse(responseCode = "500", description = "Error retrieving expenses for the user")
-
     })
 
     // Endpoint to get all expenses by the current user
-    @GetMapping("/user")
+    @GetMapping("/my-expenses")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> getAllExpensesByCurrentUser() {
+    public ResponseEntity<List<ExpenseResponseDTO>> getAllExpensesByCurrentUser() {
         List<ExpenseResponseDTO> expenses = expenseService.getAllExpensesByCurrentUser();
 
-        if (expenses.isEmpty()){
-            return ResponseEntity.noContent().build();
-        }
         return ResponseEntity.ok(expenses);
     }
 
@@ -84,14 +70,10 @@ public class ExpenseController {
     // Endpoint to get an expense by ID
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> getExpenseById(@PathVariable Long id) {
-        try {
-            return ResponseEntity.ok(expenseService.getExpenseById(id));
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong");
-        }
+    public ResponseEntity<ExpenseResponseDTO> getExpenseById(@PathVariable Long id) {
+        ExpenseResponseDTO expense = expenseService.getExpenseById(id);
+
+        return ResponseEntity.ok(expense);
     }
 
     @Operation(summary = "Create a new expense")
@@ -103,7 +85,7 @@ public class ExpenseController {
     // Endpoint to create a new expense
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> postExpense(@Valid @RequestBody ExpenseRequestDTO expenseDTO) {
+    public ResponseEntity<ExpenseResponseDTO> postExpense(@Valid @RequestBody ExpenseRequestDTO expenseDTO) {
         ExpenseResponseDTO createdExpense = expenseService.postExpense(expenseDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdExpense);
@@ -119,15 +101,9 @@ public class ExpenseController {
     // Endpoint to update an expense by ID
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> updateExpense(@PathVariable Long id, @RequestBody ExpenseRequestDTO expenseDTO) {
-        try {
-            Expense updatedExpense = expenseService.updateExpense(id, expenseDTO);
-            return ResponseEntity.ok(updatedExpense);
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong");
-        }
+    public ResponseEntity<ExpenseResponseDTO> updateExpense(@PathVariable Long id, @RequestBody @Valid ExpenseRequestDTO expenseDTO) {
+        ExpenseResponseDTO updatedExpense = expenseService.updateExpense(id, expenseDTO);
+        return ResponseEntity.ok(updatedExpense);
     }
 
     @Operation(summary = "Delete an expense by ID")
@@ -140,14 +116,8 @@ public class ExpenseController {
     // Endpoint to delete an expense by ID
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deleteExpense(@PathVariable Long id) {
-        try {
-            expenseService.deleteExpense(id);
-            return ResponseEntity.ok("Expense deleted successfully");
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong");
-        }
+    public ResponseEntity<Void> deleteExpense(@PathVariable Long id) {
+        expenseService.deleteExpense(id);
+        return ResponseEntity.noContent().build();
     }
 }
