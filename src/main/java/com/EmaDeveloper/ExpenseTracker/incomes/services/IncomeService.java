@@ -1,20 +1,22 @@
 package com.EmaDeveloper.ExpenseTracker.incomes.services;
 
 
-import com.EmaDeveloper.ExpenseTracker.incomes.dto.IncomeDTO;
-import com.EmaDeveloper.ExpenseTracker.incomes.entities.Income;
+import com.EmaDeveloper.ExpenseTracker.incomes.dto.IncomeRequestDTO;
+import com.EmaDeveloper.ExpenseTracker.incomes.dto.IncomeResponseDTO;
 
 import java.util.List;
 
 public interface IncomeService {
 
-    List<IncomeDTO> getAllIncomes();
+    List<IncomeResponseDTO> getAllIncomes();
 
-    Income getIncomeById(Long id);
+    List<IncomeResponseDTO> getAllIncomesByCurrentUser();
 
-    Income postIncome(IncomeDTO incomeDTO);
+    IncomeResponseDTO getIncomeById(Long id);
 
-    Income updateIncome(Long id, IncomeDTO incomeDTO);
+    IncomeResponseDTO postIncome(IncomeRequestDTO incomeDTO);
+
+    IncomeResponseDTO updateIncome(Long id, IncomeRequestDTO incomeDTO);
 
     void deleteIncome(Long id);
 }

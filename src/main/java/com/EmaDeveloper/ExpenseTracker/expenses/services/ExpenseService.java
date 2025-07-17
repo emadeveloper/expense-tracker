@@ -1,8 +1,7 @@
-package com.EmaDeveloper.ExpenseTracker.expenses;
+package com.EmaDeveloper.ExpenseTracker.expenses.services;
 
 import com.EmaDeveloper.ExpenseTracker.expenses.dto.ExpenseRequestDTO;
 import com.EmaDeveloper.ExpenseTracker.expenses.dto.ExpenseResponseDTO;
-import com.EmaDeveloper.ExpenseTracker.expenses.entities.Expense;
 
 import java.util.List;
 

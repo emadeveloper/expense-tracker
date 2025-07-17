@@ -2,7 +2,7 @@
 //
 //import com.EmaDeveloper.ExpenseTracker.auth.services.AuthService;
 //import com.EmaDeveloper.ExpenseTracker.exceptions.custom.ExpenseNotFoundException;
-//import com.EmaDeveloper.ExpenseTracker.expenses.ExpenseServiceImpl;
+//import com.EmaDeveloper.ExpenseTracker.expenses.services.ExpenseServiceImpl;
 //import com.EmaDeveloper.ExpenseTracker.expenses.dto.ExpenseRequestDTO;
 //import com.EmaDeveloper.ExpenseTracker.expenses.dto.ExpenseResponseDTO;
 //import com.EmaDeveloper.ExpenseTracker.expenses.entities.Expense;

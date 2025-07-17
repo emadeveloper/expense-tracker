@@ -1,10 +1,8 @@
 package com.EmaDeveloper.ExpenseTracker.incomes.entities;
 
-import com.EmaDeveloper.ExpenseTracker.incomes.dto.IncomeDTO;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.EmaDeveloper.ExpenseTracker.incomes.dto.IncomeRequestDTO;
+import com.EmaDeveloper.ExpenseTracker.users.entities.User;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,15 +31,7 @@ public class Income {
 
     private String category;
 
-    public IncomeDTO getIncomeDTO() {
-        IncomeDTO incomeDTO = new IncomeDTO();
-        incomeDTO.setId(id);
-        incomeDTO.setTitle(title);
-        incomeDTO.setDescription(description);
-        incomeDTO.setAmount(amount);
-        incomeDTO.setDate(date);
-        incomeDTO.setCategory(category);
-
-        return incomeDTO;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }

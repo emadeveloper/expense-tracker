@@ -2,7 +2,7 @@ package com.EmaDeveloper.ExpenseTracker.expenses.controller;
 
 import com.EmaDeveloper.ExpenseTracker.expenses.dto.ExpenseRequestDTO;
 import com.EmaDeveloper.ExpenseTracker.expenses.dto.ExpenseResponseDTO;
-import com.EmaDeveloper.ExpenseTracker.expenses.ExpenseService;
+import com.EmaDeveloper.ExpenseTracker.expenses.services.ExpenseService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -34,6 +34,7 @@ public class ExpenseController {
     })
 
     // Endpoint to get all expenses (only accessible by ADMIN)
+    @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ExpenseResponseDTO>> getAllExpenses() {
 

@@ -1,5 +1,6 @@
 package com.EmaDeveloper.ExpenseTracker.stats.services;
 
+import com.EmaDeveloper.ExpenseTracker.incomes.dto.IncomeResponseDTO;
 import com.EmaDeveloper.ExpenseTracker.stats.dto.GraphDTO;
 import com.EmaDeveloper.ExpenseTracker.stats.dto.StatsDTO;
 import com.EmaDeveloper.ExpenseTracker.expenses.entities.Expense;

@@ -8,9 +8,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class IncomeDTO {
-
-    private Long id;
+public class IncomeRequestDTO {
 
     @NotNull(message = "Title is required")
     @Size(min = 5, max = 50, message = "Title must be between 5 and 50 characters")
@@ -26,7 +24,7 @@ public class IncomeDTO {
     @NotNull(message = "Date is required")
     private LocalDate date;
 
-    @NotNull
+    @NotNull(message = "Amount is required")
     @Positive(message = "Amount must be positive")
     private Double amount;
 }

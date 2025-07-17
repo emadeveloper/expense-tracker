@@ -1,6 +1,7 @@
 package com.EmaDeveloper.ExpenseTracker.incomes.controller;
 
-import com.EmaDeveloper.ExpenseTracker.incomes.dto.IncomeDTO;
+import com.EmaDeveloper.ExpenseTracker.incomes.dto.IncomeRequestDTO;
+import com.EmaDeveloper.ExpenseTracker.incomes.dto.IncomeResponseDTO;
 import com.EmaDeveloper.ExpenseTracker.incomes.entities.Income;
 import com.EmaDeveloper.ExpenseTracker.incomes.services.IncomeService;
 
@@ -23,31 +24,40 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @CrossOrigin(origins = "http://localhost:5173/", allowCredentials = "true")
-@RequestMapping("/api/income")
+@RequestMapping("/api/v1/incomes")
 public class IncomeController {
     private final IncomeService incomeService;
 
-    @Operation(summary = "Get all incomes")
+    @Operation(summary = "Get all incomes of all users")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Incomes retrieved successfully"),
             @ApiResponse(responseCode = "204", description = "No incomes found"),
             @ApiResponse(responseCode = "500", description = "Error retrieving incomes")
     })
 
-    @GetMapping("/all")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> getAllIncomes() {
-        List<IncomeDTO> incomes = incomeService.getAllIncomes();
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<IncomeResponseDTO>> getAllIncomes() {
+        List<IncomeResponseDTO> incomes = incomeService.getAllIncomes();
+        if (incomes.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(incomes);
+    }
 
-        // Check if the list is null
-        if (incomes == null) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving incomes");
+    @Operation(summary = "Get all incomes by current user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Incomes retrieved successfully"),
+            @ApiResponse(responseCode = "204", description = "No incomes found for the user"),
+            @ApiResponse(responseCode = "500", description = "Error retrieving incomes for the user")
+    })
+    @GetMapping("/my-incomes")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<IncomeResponseDTO>> getAllIncomesByCurrentUser() {
+        List<IncomeResponseDTO> incomes = incomeService.getAllIncomesByCurrentUser();
+        if (incomes.isEmpty()){
+            return ResponseEntity.noContent().build();
         }
-        // Check if the list is empty
-        if (incomes.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No incomes found");
-        }
-        // if not empty, return the list of incomes
         return ResponseEntity.ok(incomes);
     }
 
@@ -60,15 +70,10 @@ public class IncomeController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> getIncomeById(@PathVariable Long id){
-        try {
-            Income income = incomeService.getIncomeById(id);
-            return ResponseEntity.ok(income);
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Income not found with id: " + id);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong");
-        }
+    public ResponseEntity<IncomeResponseDTO> getIncomeById(@PathVariable Long id){
+        IncomeResponseDTO income = incomeService.getIncomeById(id);
+
+        return ResponseEntity.ok(income);
     }
 
     @Operation(summary = "Create a new income")
@@ -79,12 +84,10 @@ public class IncomeController {
 
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> postIncome(@Valid @RequestBody IncomeDTO incomeDTO) {
-        Income createdIncome = incomeService.postIncome(incomeDTO);
+    public ResponseEntity<IncomeResponseDTO> postIncome(@Valid @RequestBody IncomeRequestDTO incomeDTO) {
+        IncomeResponseDTO createdIncome = incomeService.postIncome(incomeDTO);
 
-        return createdIncome != null
-                ? ResponseEntity.status(HttpStatus.CREATED).body(createdIncome)
-                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error creating income");
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdIncome);
     }
 
     @Operation(summary = "Update an existing income")
@@ -96,33 +99,23 @@ public class IncomeController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> updateIncome(@PathVariable Long id, @Valid @RequestBody IncomeDTO incomeDTO) {
-        try {
-            return ResponseEntity.ok(incomeService.updateIncome(id, incomeDTO));
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Income not found with id: " + id);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong");
-        }
+    public ResponseEntity<IncomeResponseDTO> updateIncome(@PathVariable Long id, @Valid @RequestBody IncomeRequestDTO incomeDTO) {
+        IncomeResponseDTO updatedIncome = incomeService.updateIncome(id, incomeDTO);
+
+        return ResponseEntity.ok(updatedIncome);
     }
 
     @Operation(summary = "Delete an income")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Income deleted successfully"),
+            @ApiResponse(responseCode = "204", description = "Income deleted successfully"),
             @ApiResponse(responseCode = "404", description = "Income not found"),
             @ApiResponse(responseCode = "500", description = "Error deleting income")
     })
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deleteIncome(@PathVariable Long id){
-        try {
-            incomeService.deleteIncome(id);
-            return ResponseEntity.ok("Income deleted successfully");
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Income not found with id: " + id);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong");
-        }
+    public ResponseEntity<Void> deleteIncome(@PathVariable Long id){
+        incomeService.deleteIncome(id);
+        return ResponseEntity.noContent().build();
     }
 }

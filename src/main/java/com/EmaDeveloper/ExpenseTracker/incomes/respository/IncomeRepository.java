@@ -1,6 +1,8 @@
 package com.EmaDeveloper.ExpenseTracker.incomes.respository;
 
+import com.EmaDeveloper.ExpenseTracker.expenses.entities.Expense;
 import com.EmaDeveloper.ExpenseTracker.incomes.entities.Income;
+import com.EmaDeveloper.ExpenseTracker.users.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -18,4 +20,6 @@ public interface IncomeRepository extends JpaRepository<Income, Long> {
     Double sumAllAmounts();
 
     Optional<Income> findFirstByOrderByDateDesc();
+
+    List<Income> findAllByUserOrderByDateDesc(User user);
 }

@@ -1,6 +1,6 @@
 package com.EmaDeveloper.ExpenseTracker.services.income;
 
-import com.EmaDeveloper.ExpenseTracker.incomes.dto.IncomeDTO;
+import com.EmaDeveloper.ExpenseTracker.incomes.dto.IncomeRequestDTO;
 import com.EmaDeveloper.ExpenseTracker.incomes.entities.Income;
 import com.EmaDeveloper.ExpenseTracker.incomes.respository.IncomeRepository;
 import com.EmaDeveloper.ExpenseTracker.incomes.services.IncomeServiceImpl;
@@ -67,7 +67,7 @@ class IncomeServiceImplTest {
         when(incomeRepository.findAll()).thenReturn(unorderedIncomes);
 
         // Act
-        List<IncomeDTO> result = incomeService.getAllIncomes();
+        List<IncomeRequestDTO> result = incomeService.getAllIncomes();
 
         // Assert
         assertNotNull(result);
@@ -113,7 +113,7 @@ class IncomeServiceImplTest {
     @Test
     void testPostIncome() {
         // Arrange
-        IncomeDTO incomeDTO = new IncomeDTO();
+        IncomeRequestDTO incomeDTO = new IncomeRequestDTO();
         incomeDTO.setTitle("Salario");
         incomeDTO.setAmount(5000.0);
         incomeDTO.setCategory("Trabajo");
@@ -145,7 +145,7 @@ class IncomeServiceImplTest {
     void testUpdateIncome_shouldReturnUpdatedIncome() {
         // Arrange
         Long incomeId = 1L;
-        IncomeDTO incomeDTO = new IncomeDTO();
+        IncomeRequestDTO incomeDTO = new IncomeRequestDTO();
         incomeDTO.setId(incomeId);
         incomeDTO.setTitle("Salario");
         incomeDTO.setAmount(5000.0);

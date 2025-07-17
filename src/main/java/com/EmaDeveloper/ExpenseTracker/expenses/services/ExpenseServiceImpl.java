@@ -1,4 +1,4 @@
-package com.EmaDeveloper.ExpenseTracker.expenses;
+package com.EmaDeveloper.ExpenseTracker.expenses.services;
 
 import com.EmaDeveloper.ExpenseTracker.exceptions.custom.ExpenseNotFoundException;
 import com.EmaDeveloper.ExpenseTracker.expenses.dto.ExpenseRequestDTO;
