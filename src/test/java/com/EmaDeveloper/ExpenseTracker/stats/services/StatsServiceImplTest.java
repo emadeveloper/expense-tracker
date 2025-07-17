@@ -1,10 +1,9 @@
-package com.EmaDeveloper.ExpenseTracker.services.stats;
+package com.EmaDeveloper.ExpenseTracker.stats.services;
 
 import com.EmaDeveloper.ExpenseTracker.expenses.entities.Expense;
 import com.EmaDeveloper.ExpenseTracker.incomes.entities.Income;
 import com.EmaDeveloper.ExpenseTracker.expenses.repository.ExpenseRepository;
 import com.EmaDeveloper.ExpenseTracker.incomes.respository.IncomeRepository;
-import com.EmaDeveloper.ExpenseTracker.stats.services.StatsServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

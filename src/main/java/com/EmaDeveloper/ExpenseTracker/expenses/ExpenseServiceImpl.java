@@ -1,5 +1,6 @@
-package com.EmaDeveloper.ExpenseTracker.expenses.services;
+package com.EmaDeveloper.ExpenseTracker.expenses;
 
+import com.EmaDeveloper.ExpenseTracker.exceptions.custom.ExpenseNotFoundException;
 import com.EmaDeveloper.ExpenseTracker.expenses.dto.ExpenseRequestDTO;
 import com.EmaDeveloper.ExpenseTracker.expenses.dto.ExpenseResponseDTO;
 import com.EmaDeveloper.ExpenseTracker.expenses.entities.Expense;
@@ -8,7 +9,6 @@ import com.EmaDeveloper.ExpenseTracker.users.entities.User;
 import com.EmaDeveloper.ExpenseTracker.expenses.repository.ExpenseRepository;
 import com.EmaDeveloper.ExpenseTracker.users.repository.UserRepository;
 import com.EmaDeveloper.ExpenseTracker.auth.services.AuthService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -40,13 +40,14 @@ public class ExpenseServiceImpl implements ExpenseService {
                 .stream()
                 .map(ExpenseMapper::toResponseDTO)
                 .toList();
+
     }
 
     // method to get an expense by id
     @Override
     public ExpenseResponseDTO getExpenseById(Long id) {
         Expense expense = expenseRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Expense not found with id: " + id));
+                .orElseThrow(() -> new ExpenseNotFoundException(id));
 
         return ExpenseMapper.toResponseDTO(expense);
     }
@@ -66,7 +67,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Override
     public ExpenseResponseDTO updateExpense(Long id, ExpenseRequestDTO expenseDTO) {
         Expense expense = expenseRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Expense not found with id: " + id));
+                .orElseThrow(() -> new ExpenseNotFoundException(id));
 
         expense.setTitle(expenseDTO.getTitle());
         expense.setDescription(expenseDTO.getDescription());
@@ -83,9 +84,9 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Override
     public void deleteExpense(Long id) {
         if (!expenseRepository.existsById(id)) {
-            throw new EntityNotFoundException("Expense not found with id: " + id);
+            throw new ExpenseNotFoundException(id);
         }
-        // Optionally, you can check if the expense belongs to the current user
+        // check if the expense belongs to the current user
         User currentUser = authService.getCurrentUser();
         Optional<Expense> expenseOptional = expenseRepository.findById(id);
 

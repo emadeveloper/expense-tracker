@@ -2,18 +2,16 @@ package com.EmaDeveloper.ExpenseTracker.expenses.entities;
 
 import com.EmaDeveloper.ExpenseTracker.users.entities.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Builder
-@Data
+@Entity
 public class Expense {
 
     @Id

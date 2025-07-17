@@ -2,15 +2,12 @@ package com.EmaDeveloper.ExpenseTracker.expenses.controller;
 
 import com.EmaDeveloper.ExpenseTracker.expenses.dto.ExpenseRequestDTO;
 import com.EmaDeveloper.ExpenseTracker.expenses.dto.ExpenseResponseDTO;
-import com.EmaDeveloper.ExpenseTracker.expenses.entities.Expense;
-import com.EmaDeveloper.ExpenseTracker.expenses.mapper.ExpenseMapper;
-import com.EmaDeveloper.ExpenseTracker.expenses.services.ExpenseService;
+import com.EmaDeveloper.ExpenseTracker.expenses.ExpenseService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
