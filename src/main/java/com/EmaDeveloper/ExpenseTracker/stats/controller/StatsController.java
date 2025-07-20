@@ -1,5 +1,7 @@
 package com.EmaDeveloper.ExpenseTracker.stats.controller;
 
+import com.EmaDeveloper.ExpenseTracker.stats.dto.GraphDTO;
+import com.EmaDeveloper.ExpenseTracker.stats.dto.StatsDTO;
 import com.EmaDeveloper.ExpenseTracker.stats.services.StatsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -18,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:5173/", allowCredentials = "true")
-@RequestMapping("api/stats")
+@RequestMapping("api/v1/stats")
 public class StatsController {
 
     private final StatsService statsService;
@@ -30,16 +32,14 @@ public class StatsController {
             @ApiResponse(responseCode = "500", description = "Error retrieving chart data")
     })
 
-    @GetMapping("/chart")
+    @GetMapping("/chart-data")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> getChartDetails() {
-        if (statsService.getChartData() == null) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving chart data");
+    public ResponseEntity<GraphDTO> getChartDetails() {
+        GraphDTO chartData = statsService.getChartData();
+        if (chartData == null || chartData.getExpenseList().isEmpty() && chartData.getIncomeList().isEmpty()) {
+            return ResponseEntity.noContent().build();
         }
-        if (statsService.getChartData().getExpenseList().isEmpty() && statsService.getChartData().getIncomeList().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No chart data found");
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(statsService.getChartData());
+        return ResponseEntity.ok(chartData);
     }
 
     @Operation(summary = "Get Stats")
@@ -49,15 +49,13 @@ public class StatsController {
             @ApiResponse(responseCode = "500", description = "Error retrieving stats")
     })
 
-    @GetMapping("/stats")
+    @GetMapping("/summary")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> getStats() {
-        if (statsService.getStats() == null) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving stats");
+    public ResponseEntity<StatsDTO> getStats() {
+        StatsDTO stats = statsService.getStats();
+        if (stats == null){
+            return ResponseEntity.noContent().build();
         }
-        if (statsService.getStats().getIncome() == 0 && statsService.getStats().getExpense() == 0) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No stats found");
-        }
-        return ResponseEntity.ok(statsService.getStats());
+        return ResponseEntity.ok(stats);
     }
 }

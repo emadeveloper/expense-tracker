@@ -56,9 +56,9 @@ class StatsServiceImplTest {
                 .description("Pago mensual del alquiler")
                 .build();
 
-        when(incomeRepository.findByDateBetween(any(LocalDate.class), any(LocalDate.class)))
+        when(incomeRepository.findByUserAndDateBetween(any(LocalDate.class), any(LocalDate.class)))
                 .thenReturn(List.of(income1));
-        when(expenseRepository.findByDateBetween(any(LocalDate.class), any(LocalDate.class)))
+        when(expenseRepository.findByUserAndDateBetween(any(LocalDate.class), any(LocalDate.class)))
                 .thenReturn(List.of(expense1));
 
         // Act
@@ -71,8 +71,8 @@ class StatsServiceImplTest {
         assertEquals("Trabajo", result.getIncomeList().get(0).getCategory());
         assertEquals("Gastos fijos", result.getExpenseList().get(0).getCategory());
 
-        verify(incomeRepository).findByDateBetween(any(LocalDate.class), any(LocalDate.class));
-        verify(expenseRepository).findByDateBetween(any(LocalDate.class), any(LocalDate.class));
+        verify(incomeRepository).findByUserAndDateBetween(any(LocalDate.class), any(LocalDate.class));
+        verify(expenseRepository).findByUserAndDateBetween(any(LocalDate.class), any(LocalDate.class));
     }
 
     @Test
@@ -115,10 +115,10 @@ class StatsServiceImplTest {
                 .build();
 
 
-        when(incomeRepository.sumAllAmounts()).thenReturn(12000.0);
-        when(expenseRepository.sumAllAmounts()).thenReturn(1800.0);
-        when(incomeRepository.findFirstByOrderByDateDesc()).thenReturn(Optional.ofNullable(income2));
-        when(expenseRepository.findFirstByOrderByDateDesc()).thenReturn(Optional.ofNullable(expense2));
+        when(incomeRepository.sumAmountByUser()).thenReturn(12000.0);
+        when(expenseRepository.sumAmountByUser()).thenReturn(1800.0);
+        when(incomeRepository.findFirstByUserOrderByDateDesc()).thenReturn(Optional.ofNullable(income2));
+        when(expenseRepository.findFirstByUserOrderByDateDesc()).thenReturn(Optional.ofNullable(expense2));
 
         when(incomeRepository.findAll()).thenReturn(List.of(income1, income2));
         when(expenseRepository.findAll()).thenReturn(List.of(expense1, expense2));
@@ -142,10 +142,10 @@ class StatsServiceImplTest {
         assertEquals(1050.0, result.getMaxExpense());
 
 
-        verify(incomeRepository).sumAllAmounts();
-        verify(expenseRepository).sumAllAmounts();
-        verify(incomeRepository).findFirstByOrderByDateDesc();
-        verify(expenseRepository).findFirstByOrderByDateDesc();
+        verify(incomeRepository).sumAmountByUser();
+        verify(expenseRepository).sumAmountByUser();
+        verify(incomeRepository).findFirstByUserOrderByDateDesc();
+        verify(expenseRepository).findFirstByUserOrderByDateDesc();
     }
 }
 
