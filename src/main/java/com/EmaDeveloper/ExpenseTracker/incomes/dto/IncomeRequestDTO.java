@@ -1,6 +1,7 @@
 package com.EmaDeveloper.ExpenseTracker.incomes.dto;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -22,6 +23,7 @@ public class IncomeRequestDTO {
     private String category;
 
     @NotNull(message = "Date is required")
+    @PastOrPresent(message = "Date must be in the past or present")
     private LocalDate date;
 
     @NotNull(message = "Amount is required")

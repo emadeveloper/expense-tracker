@@ -10,7 +10,10 @@ import com.EmaDeveloper.ExpenseTracker.expenses.repository.ExpenseRepository;
 import com.EmaDeveloper.ExpenseTracker.users.repository.UserRepository;
 import com.EmaDeveloper.ExpenseTracker.auth.services.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -46,8 +49,14 @@ public class ExpenseServiceImpl implements ExpenseService {
     // method to get an expense by id
     @Override
     public ExpenseResponseDTO getExpenseById(Long id) {
+        User currentUser = authService.getCurrentUser();
+
         Expense expense = expenseRepository.findById(id)
                 .orElseThrow(() -> new ExpenseNotFoundException(id));
+
+        if (!expense.getUser().getId().equals(currentUser.getId())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to access this expense");
+        }
 
         return ExpenseMapper.toResponseDTO(expense);
     }
@@ -66,9 +75,14 @@ public class ExpenseServiceImpl implements ExpenseService {
     // method to update an expense
     @Override
     public ExpenseResponseDTO updateExpense(Long id, ExpenseRequestDTO expenseDTO) {
+        User currentUser = authService.getCurrentUser();
+
         Expense expense = expenseRepository.findById(id)
                 .orElseThrow(() -> new ExpenseNotFoundException(id));
 
+        if (!expense.getUser().getId().equals(currentUser.getId())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to update this expense");
+        }
         expense.setTitle(expenseDTO.getTitle());
         expense.setDescription(expenseDTO.getDescription());
         expense.setDate(expenseDTO.getDate());

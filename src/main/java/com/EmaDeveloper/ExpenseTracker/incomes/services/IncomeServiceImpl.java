@@ -10,7 +10,9 @@ import com.EmaDeveloper.ExpenseTracker.incomes.respository.IncomeRepository;
 import com.EmaDeveloper.ExpenseTracker.users.entities.User;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Comparator;
 import java.util.List;
@@ -45,8 +47,14 @@ public class IncomeServiceImpl implements IncomeService {
     // method to get income by id
     @Override
     public IncomeResponseDTO getIncomeById(Long id) {
+        User currentUser = authService.getCurrentUser();
+
         Income income = incomeRepository.findById(id)
                 .orElseThrow(() -> new IncomeNotFoundException(id));
+
+        if (!income.getUser().getId().equals(currentUser.getId())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to access this income");
+        }
 
         return IncomeMapper.toResponseDTO(income);
     }
@@ -65,8 +73,14 @@ public class IncomeServiceImpl implements IncomeService {
     // method to update an existing income
     @Override
     public IncomeResponseDTO updateIncome(Long id, IncomeRequestDTO incomeDTO) {
+        User currentUser = authService.getCurrentUser();
         Income income = incomeRepository.findById(id)
                 .orElseThrow(() -> new IncomeNotFoundException(id));
+
+        // Check if the income belongs to the current user
+        if (!income.getUser().getId().equals(currentUser.getId())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to update this income");
+        }
 
         income.setTitle(incomeDTO.getTitle());
         income.setDescription(incomeDTO.getDescription());

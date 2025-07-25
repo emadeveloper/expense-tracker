@@ -1,6 +1,5 @@
 package com.EmaDeveloper.ExpenseTracker.incomes.respository;
 
-import com.EmaDeveloper.ExpenseTracker.incomes.dto.IncomeResponseDTO;
 import com.EmaDeveloper.ExpenseTracker.incomes.entities.Income;
 import com.EmaDeveloper.ExpenseTracker.users.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
