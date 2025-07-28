@@ -156,7 +156,7 @@ class IncomeServiceImplTest {
     }
 
     @Nested
-    @DisplayName("getAllIncomesByCurrentUser Tests")
+    @DisplayName("Get All Incomes By Current User Tests")
     class GetAllIncomesByCurrentUserTests {
 
         @Test
@@ -388,7 +388,7 @@ class IncomeServiceImplTest {
             updateDTO.setDate(LocalDate.of(2025, 5, 10));
             updateDTO.setDescription("Updated salary payment");
 
-            // Mock del income actualizado
+            // Income mock for update
             Income updatedIncome = Income.builder()
                     .id(incomeId)
                     .title("Updated Salary")
@@ -431,7 +431,6 @@ class IncomeServiceImplTest {
 
             assertEquals("Income not found with id: " + incomeId, exception.getMessage());
             verify(incomeRepository, times(1)).findById(incomeId);
-            //verify(authService, never()).getCurrentUser();
             verify(incomeRepository, never()).save(any(Income.class));
         }
 
@@ -550,7 +549,7 @@ class IncomeServiceImplTest {
         @Test
         @DisplayName("Should handle empty optional when income not found after exists check")
         void deleteIncome_shouldHandleEmptyOptional_whenIncomeNotFoundAfterExistsCheck() {
-            // Arrange - Simula race condition
+            // Arrange - Simulates race condition
             Long incomeId = 1L;
             when(incomeRepository.existsById(incomeId)).thenReturn(true);
             when(authService.getCurrentUser()).thenReturn(currentUser);
@@ -559,7 +558,7 @@ class IncomeServiceImplTest {
             // Act
             incomeService.deleteIncome(incomeId);
 
-            // Assert - Debe proceder a eliminar (operación idempotente)
+            // Assert - must proceed to delete (idempotent operation)
             verify(incomeRepository, times(1)).deleteById(incomeId);
         }
 
