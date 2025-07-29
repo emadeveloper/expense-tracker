@@ -88,7 +88,7 @@ public class AuthServiceImpl implements AuthService{
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            request.getUsername(),
+                            request.getUsernameOrEmail(),
                             request.getPassword()
                     )
             );
@@ -97,7 +97,7 @@ public class AuthServiceImpl implements AuthService{
             // throw new RuntimeException("Credenciales inválidas");
         }
 
-        User user = userRepository.findByUsernameOrEmail(request.getUsername(), request.getUsername())
+        User user = userRepository.findByUsernameOrEmail(request.getUsernameOrEmail(), request.getUsernameOrEmail())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado después de autenticación exitosa. Esto no debería pasar."));
 
         // Generate JWT with extra claims (claims are optional, and they can be used to include additional information in the token)
@@ -118,29 +118,9 @@ public class AuthServiceImpl implements AuthService{
                 user.getEmail(),
                 roleNames
         );
-
         return new AuthResponseDTO(jwt, "Bearer", userResponse);
     }
 
-//    @Override
-//    public AuthResponseDTO getCurrentUser(String token) {
-//        String currentUsername = jwtService.extractUsername(token);
-//        User user = userRepository.findByUsernameOrEmail(currentUsername, currentUsername)
-//                .orElseThrow(() -> new RuntimeException("User not found with username or email: " + currentUsername));
-//
-//        Set<String> roleNames = user.getRoles().stream()
-//                .map(Role::getName)
-//                .collect(Collectors.toSet());
-//
-//        UserResponseDTO userResponse = new UserResponseDTO(
-//                user.getId(),
-//                user.getUsername(),
-//                user.getEmail(),
-//                roleNames
-//        );
-//
-//        return new AuthResponseDTO(token, "Bearer", userResponse);
-//    }
     @Override
     public User getCurrentUser(){
         String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();

@@ -51,6 +51,7 @@ public class AuthController {
     // Endpoint to log a user
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> loginUser(@Valid @RequestBody LoginRequestDTO request){
+        System.out.println("Request recevied: " + request);
         try {
             AuthResponseDTO response = authService.loginUser(request);
             System.out.println("AUTH SUCCESS - Token generated");
