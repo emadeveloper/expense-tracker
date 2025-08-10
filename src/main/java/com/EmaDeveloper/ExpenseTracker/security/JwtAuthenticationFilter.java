@@ -30,49 +30,40 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
+        // Ignorar la validación JWT en el login y endpoints públicos
+        String path = request.getServletPath();
+        if (path.equals("/api/v1/auth/login") || path.startsWith("/api/v1/auth/register")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String userIdentifier;
 
-        // 1. Check if the Authorization header is present and starts with "Bearer "
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response); // If no token or not Bearer, continue the filter chain
-            return; // Exit the method
+            filterChain.doFilter(request, response);
+            return;
         }
 
-        // 2. Extract the JWT token
-        jwt = authHeader.substring(7); // "Bearer " has 7 characters
-
-        // 3. Extract the user identifier (username or email) from the token
+        jwt = authHeader.substring(7);
         userIdentifier = jwtService.extractUsername(jwt);
 
-        // 4. Check if the user is authenticated and the identifier is not null
         if (userIdentifier != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            // 5. If the user is not authenticated, but the JWT is valid, load the user details
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userIdentifier);
 
-            // 6. Validate the JWT token
             if (jwtService.isTokenValid(jwt, userDetails)) {
-
-                // 7. If the token is valid, create an authentication object
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
-                        null, // Credentials are null after token validation
-                        userDetails.getAuthorities() // User's roles/authorities
+                        null,
+                        userDetails.getAuthorities()
                 );
-
-                // 8. Set authentication details (e.g., client IP) for Spring Security
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                );
-
-                // 9. Set the authentication object in the SecurityContextHolder
-                // This "authenticates" the user for the current request
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
 
-        // 10. Continue with the filter chain (to other filters or the DispatcherServlet)
         filterChain.doFilter(request, response);
     }
+
 }
