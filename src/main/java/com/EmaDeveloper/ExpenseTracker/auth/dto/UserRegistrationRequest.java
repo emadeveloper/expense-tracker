@@ -1,4 +1,4 @@
-package com.EmaDeveloper.ExpenseTracker.users.dto;
+package com.EmaDeveloper.ExpenseTracker.auth.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -11,6 +11,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserRegistrationRequest {
+    @NotNull(message = "Full name cannot be blank")
+    @Size(min = 5, max = 50, message = "Full name must be between 5 and 50 characters")
+    private String fullName;
+
     @NotNull(message = "Username cannot be blank")
     @Size(min = 5, max = 50, message = "Username must be between 5 and 50 characters")
     private String username;

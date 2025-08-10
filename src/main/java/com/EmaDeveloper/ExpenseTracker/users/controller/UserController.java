@@ -1,7 +1,7 @@
 package com.EmaDeveloper.ExpenseTracker.users.controller;
 
-import com.EmaDeveloper.ExpenseTracker.users.dto.UserResponseDTO;
-import com.EmaDeveloper.ExpenseTracker.users.dto.UserRegistrationRequest;
+import com.EmaDeveloper.ExpenseTracker.auth.dto.UserResponseDTO;
+import com.EmaDeveloper.ExpenseTracker.auth.dto.UserRegistrationRequest;
 import com.EmaDeveloper.ExpenseTracker.users.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -52,8 +52,6 @@ public class UserController {
         UserResponseDTO user = userService.getUserByUsername(username);
         return ResponseEntity.ok(user);
     }
-
-
 
     @Operation(summary = "Update user by ID")
     @ApiResponses(value = {

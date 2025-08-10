@@ -1,4 +1,4 @@
-package com.EmaDeveloper.ExpenseTracker.users.dto;
+package com.EmaDeveloper.ExpenseTracker.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

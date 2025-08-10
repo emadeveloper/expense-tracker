@@ -1,7 +1,7 @@
 package com.EmaDeveloper.ExpenseTracker.users.services;
 
-import com.EmaDeveloper.ExpenseTracker.users.dto.UserRegistrationRequest;
-import com.EmaDeveloper.ExpenseTracker.users.dto.UserResponseDTO;
+import com.EmaDeveloper.ExpenseTracker.auth.dto.UserRegistrationRequest;
+import com.EmaDeveloper.ExpenseTracker.auth.dto.UserResponseDTO;
 import com.EmaDeveloper.ExpenseTracker.roles.entities.Role;
 import com.EmaDeveloper.ExpenseTracker.users.entities.User;
 import com.EmaDeveloper.ExpenseTracker.roles.repository.RoleRepository;
@@ -28,45 +28,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDTO getUserById(Long id) {
                 User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User with id : " + id + " not found"));
         return convertToUserResponseDTO(user);
     }
 
     @Override
     public UserResponseDTO getUserByUsername(String username) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with username: " + username));
         return convertToUserResponseDTO(user);
     }
-
-    @Override
-    public UserResponseDTO registerUser(com.EmaDeveloper.ExpenseTracker.users.dto.@Valid UserRegistrationRequest registrationRequest) {
-        try {
-            if (userRepository.existsByUsername(registrationRequest.getUsername())) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
-            }
-            if (userRepository.existsByEmail(registrationRequest.getEmail())) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
-            }
-
-            User user = new User();
-            user.setUsername(registrationRequest.getUsername());
-            user.setEmail(registrationRequest.getEmail());
-            user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
-
-            Role userRole = roleRepository.findByName("ROLE_USER")
-                    .orElseThrow(() -> new RuntimeException("Rol 'ROLE_USER' no encontrado"));
-            Set<Role> roles = new HashSet<>();
-            roles.add(userRole);
-            user.setRoles(roles);
-
-            User savedUser = userRepository.save(user);
-            return convertToUserResponseDTO(savedUser);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al registrar usuario");
-        }
-    }
-
 
     @Override
     public UserResponseDTO updateUser(Long id, @Valid UserRegistrationRequest updatedUserRequest) {

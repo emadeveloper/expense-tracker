@@ -2,10 +2,8 @@ package com.EmaDeveloper.ExpenseTracker.auth.controller;
 
 import com.EmaDeveloper.ExpenseTracker.auth.dto.AuthResponseDTO;
 import com.EmaDeveloper.ExpenseTracker.auth.dto.LoginRequestDTO;
-import com.EmaDeveloper.ExpenseTracker.users.dto.UserRegistrationRequest;
-import com.EmaDeveloper.ExpenseTracker.users.dto.UserResponseDTO;
+import com.EmaDeveloper.ExpenseTracker.auth.dto.UserRegistrationRequest;
 import com.EmaDeveloper.ExpenseTracker.auth.services.AuthService;
-import com.EmaDeveloper.ExpenseTracker.users.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
-    private final UserService userService;
 
 
     @Operation(summary = "Register a new user")
@@ -34,11 +31,12 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "Invalid input data"),
     })
     // endpoint to register a new user
-    @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> registerUser(
+    @PostMapping("/signup")
+    public ResponseEntity<AuthResponseDTO> registerUser(
             @Parameter(description = "User registration request", required = true)
             @Valid @RequestBody UserRegistrationRequest registrationRequest) {
-        UserResponseDTO user = userService.registerUser(registrationRequest);
+
+        AuthResponseDTO user = authService.registerUser(registrationRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
@@ -51,15 +49,7 @@ public class AuthController {
     // Endpoint to log a user
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> loginUser(@Valid @RequestBody LoginRequestDTO request){
-        System.out.println("Request recevied: " + request);
-        try {
             AuthResponseDTO response = authService.loginUser(request);
-            System.out.println("AUTH SUCCESS - Token generated");
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            System.out.println("AUTH FAILED - Error: " + e.getMessage());
-            e.printStackTrace();
-            throw e;
-        }
     }
 }

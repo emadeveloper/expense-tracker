@@ -3,8 +3,8 @@ package com.EmaDeveloper.ExpenseTracker.auth.services;
 import com.EmaDeveloper.ExpenseTracker.jwt.JwtService;
 import com.EmaDeveloper.ExpenseTracker.auth.dto.AuthResponseDTO;
 import com.EmaDeveloper.ExpenseTracker.auth.dto.LoginRequestDTO;
-import com.EmaDeveloper.ExpenseTracker.users.dto.UserRegistrationRequest;
-import com.EmaDeveloper.ExpenseTracker.users.dto.UserResponseDTO;
+import com.EmaDeveloper.ExpenseTracker.auth.dto.UserRegistrationRequest;
+import com.EmaDeveloper.ExpenseTracker.auth.dto.UserResponseDTO;
 import com.EmaDeveloper.ExpenseTracker.roles.entities.Role;
 import com.EmaDeveloper.ExpenseTracker.users.entities.User;
 import com.EmaDeveloper.ExpenseTracker.roles.repository.RoleRepository;
@@ -93,19 +93,18 @@ public class AuthServiceImpl implements AuthService{
                     )
             );
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Credenciales inválidas (username o password incorrectos)");
-            // throw new RuntimeException("Credenciales inválidas");
+            throw new BadCredentialsException("Invalid username or password ", e);
         }
 
-        User user = userRepository.findByUsernameOrEmail(request.getUsernameOrEmail(), request.getUsernameOrEmail())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado después de autenticación exitosa. Esto no debería pasar."));
+        User user = userRepository.findByUsername(request.getUsernameOrEmail())
+                .or(() -> userRepository.findByEmail(request.getUsernameOrEmail()))
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         // Generate JWT with extra claims (claims are optional, and they can be used to include additional information in the token)
         Map<String, Object> extraClaims = new HashMap<>();
-        extraClaims.put("roles", user.getRoles().stream().map(Role::getName).collect(Collectors.toList()));
+        extraClaims.put("roles", user.getRoles().stream().map(Role::getName).toList());
         // If ID needed in the token, you can add it as well
-        // extraClaims.put("userId", user.getId());
-        String jwt = jwtService.generateToken(extraClaims, user); // Using the method that accepts extra claims
+        String jwt = jwtService.generateToken(extraClaims, user);
 
         // 4. Create response DTO
         Set<String> roleNames = user.getRoles().stream()
