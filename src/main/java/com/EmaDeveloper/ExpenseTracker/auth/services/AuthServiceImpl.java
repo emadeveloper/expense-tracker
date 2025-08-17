@@ -55,6 +55,7 @@ public class AuthServiceImpl implements AuthService{
 
         User user = new User();
         user.setUsername(request.getUsername());
+        user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
@@ -75,6 +76,7 @@ public class AuthServiceImpl implements AuthService{
         UserResponseDTO userResponse = new UserResponseDTO(
                 user.getId(),
                 user.getUsername(),
+                user.getFullName(),
                 user.getEmail(),
                 roleNames
         );
@@ -114,6 +116,7 @@ public class AuthServiceImpl implements AuthService{
         UserResponseDTO userResponse = new UserResponseDTO(
                 user.getId(),
                 user.getUsername(),
+                user.getFullName(),
                 user.getEmail(),
                 roleNames
         );

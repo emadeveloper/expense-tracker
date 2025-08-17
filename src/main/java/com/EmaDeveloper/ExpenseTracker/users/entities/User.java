@@ -29,6 +29,8 @@ public class User implements UserDetails {
 
     private String username;
 
+    private String fullName;
+
     private String password;
 
     private String email;
@@ -43,7 +45,7 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
-                .collect(Collectors.toList());
+                .toList(); // Changed collectors.(collect -> to toList()
     }
 
     @Override

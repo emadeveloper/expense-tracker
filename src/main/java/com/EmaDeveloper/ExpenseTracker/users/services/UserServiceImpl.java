@@ -64,6 +64,7 @@ public class UserServiceImpl implements UserService {
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
+                user.getFullName(),
                 user.getRoles().stream()
                         .map(Role::getName)
                         .collect(Collectors.toSet())
