@@ -16,7 +16,7 @@ public interface IncomeRepository extends JpaRepository<Income, Long> {
 
     List<Income> findByUserAndDateBetween(User user, LocalDate startDate, LocalDate endDate);
 
-    @Query("SELECT SUM(i.amount) FROM Income i")
+    @Query("SELECT SUM(i.amount) FROM Income i WHERE i.user = :user")
     Double sumAmountByUser(@Param("user") User user);
 
     Optional<Income> findFirstByUserOrderByDateDesc(User user);

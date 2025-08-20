@@ -3,13 +3,14 @@ package com.EmaDeveloper.ExpenseTracker.stats.controller;
 import com.EmaDeveloper.ExpenseTracker.stats.dto.GraphDTO;
 import com.EmaDeveloper.ExpenseTracker.stats.dto.StatsDTO;
 import com.EmaDeveloper.ExpenseTracker.stats.services.StatsService;
+import com.EmaDeveloper.ExpenseTracker.users.entities.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,8 +35,8 @@ public class StatsController {
 
     @GetMapping("/chart-data")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<GraphDTO> getChartDetails() {
-        GraphDTO chartData = statsService.getChartData();
+    public ResponseEntity<GraphDTO> getChartDetails(@AuthenticationPrincipal User user) {
+        GraphDTO chartData = statsService.getChartData(user);
         if (chartData == null || chartData.getExpenseList().isEmpty() && chartData.getIncomeList().isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -51,8 +52,8 @@ public class StatsController {
 
     @GetMapping("/summary")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<StatsDTO> getStats() {
-        StatsDTO stats = statsService.getStats();
+    public ResponseEntity<StatsDTO> getStats(@AuthenticationPrincipal User user) {
+        StatsDTO stats = statsService.getStats(user);
         if (stats == null){
             return ResponseEntity.noContent().build();
         }

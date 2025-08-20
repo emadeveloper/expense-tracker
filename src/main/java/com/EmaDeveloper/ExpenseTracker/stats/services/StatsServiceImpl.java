@@ -29,8 +29,7 @@ public class StatsServiceImpl implements StatsService {
     private final AuthService authService;
 
     @Override
-    public GraphDTO getChartData() {
-        User user = authService.getCurrentUser();
+    public GraphDTO getChartData(User user) {
 
         LocalDate endDate = LocalDate.now();
         LocalDate startDate = endDate.minusDays(27);
@@ -48,8 +47,7 @@ public class StatsServiceImpl implements StatsService {
     }
 
     @Override
-    public StatsDTO getStats() {
-        User user = authService.getCurrentUser();
+    public StatsDTO getStats(User user) {
 
         Double totalIncome = incomeRepository.sumAmountByUser(user);
         Double totalExpense = expenseRepository.sumAmountByUser(user);
