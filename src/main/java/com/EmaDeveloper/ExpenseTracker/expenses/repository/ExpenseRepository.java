@@ -26,4 +26,7 @@ public interface ExpenseRepository extends JpaRepository <Expense, Long>{
 
     List<Expense> findByUser(User user);
 
+    Expense findTopByUserOrderByAmountDesc(User user);
+
+    Expense findTopByUserOrderByAmountAsc(User user);
 }

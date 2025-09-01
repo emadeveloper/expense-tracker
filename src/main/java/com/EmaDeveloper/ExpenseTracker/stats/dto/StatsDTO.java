@@ -7,17 +7,20 @@ import com.EmaDeveloper.ExpenseTracker.incomes.entities.Income;
 import com.EmaDeveloper.ExpenseTracker.users.dto.UserSummaryDTO;
 import lombok.Data;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 @Data
 public class StatsDTO {
-
-    private Double income;
-    private Double expense;
-    private IncomeResponseDTO latestIncome;
-    private ExpenseResponseDTO latestExpense;
     private Double balance;
-    private Double minIncome;
-    private Double maxIncome;
-    private Double minExpense;
-    private Double maxExpense;
+    private Double totalIncomes;
+    private Double totalExpenses;
+
+    private ExpenseResponseDTO latestExpense;
+    private IncomeResponseDTO latestIncome;
+
+    private IncomeStatsDTO incomes;
+    private ExpenseStatsDTO expenses;
+
     private UserSummaryDTO user;
 }

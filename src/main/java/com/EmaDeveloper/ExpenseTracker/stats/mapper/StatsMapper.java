@@ -4,11 +4,13 @@ import com.EmaDeveloper.ExpenseTracker.expenses.dto.ExpenseResponseDTO;
 import com.EmaDeveloper.ExpenseTracker.expenses.entities.Expense;
 import com.EmaDeveloper.ExpenseTracker.incomes.dto.IncomeResponseDTO;
 import com.EmaDeveloper.ExpenseTracker.incomes.entities.Income;
+import com.EmaDeveloper.ExpenseTracker.stats.dto.MinMaxDTO;
 import com.EmaDeveloper.ExpenseTracker.users.dto.UserSummaryDTO;
 import com.EmaDeveloper.ExpenseTracker.users.entities.User;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class StatsMapper {
@@ -38,6 +40,32 @@ public class StatsMapper {
                         mapToUserSummaryDTO(expense.getUser())
                 ))
                 .toList();
+    }
+
+    public static MinMaxDTO toMinMaxDTO (Income income) {
+        if (income == null) return null;
+
+        return new MinMaxDTO(
+                income.getId(),
+                income.getTitle(),
+                income.getCategory(),
+                income.getDescription(),
+                income.getAmount(),
+                income.getDate()
+        );
+    }
+
+    public static MinMaxDTO toMinMaxDTO (Expense expense){
+        if (expense == null) return null;
+
+        return new MinMaxDTO(
+                expense.getId(),
+                expense.getTitle(),
+                expense.getCategory(),
+                expense.getDescription(),
+                expense.getAmount(),
+                expense.getDate()
+        );
     }
 
     private static UserSummaryDTO mapToUserSummaryDTO(User user){
