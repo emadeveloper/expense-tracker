@@ -1,14 +1,11 @@
 package com.EmaDeveloper.ExpenseTracker.stats.dto;
 
 import com.EmaDeveloper.ExpenseTracker.expenses.dto.ExpenseResponseDTO;
-import com.EmaDeveloper.ExpenseTracker.expenses.entities.Expense;
 import com.EmaDeveloper.ExpenseTracker.incomes.dto.IncomeResponseDTO;
-import com.EmaDeveloper.ExpenseTracker.incomes.entities.Income;
 import com.EmaDeveloper.ExpenseTracker.users.dto.UserSummaryDTO;
 import lombok.Data;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.util.List;
 
 @Data
 public class StatsDTO {
@@ -21,6 +18,8 @@ public class StatsDTO {
 
     private IncomeStatsDTO incomes;
     private ExpenseStatsDTO expenses;
+
+    private List<MonthlyExpensesDTO> monthlyExpenses;
 
     private UserSummaryDTO user;
 }

@@ -1,22 +1,18 @@
 package com.EmaDeveloper.ExpenseTracker.stats.services;
 
 import com.EmaDeveloper.ExpenseTracker.auth.services.AuthService;
-import com.EmaDeveloper.ExpenseTracker.expenses.dto.ExpenseResponseDTO;
 import com.EmaDeveloper.ExpenseTracker.expenses.entities.Expense;
 import com.EmaDeveloper.ExpenseTracker.expenses.mapper.ExpenseMapper;
 import com.EmaDeveloper.ExpenseTracker.expenses.repository.ExpenseRepository;
-import com.EmaDeveloper.ExpenseTracker.incomes.dto.IncomeResponseDTO;
 import com.EmaDeveloper.ExpenseTracker.incomes.entities.Income;
 import com.EmaDeveloper.ExpenseTracker.incomes.mapper.IncomeMapper;
 import com.EmaDeveloper.ExpenseTracker.incomes.respository.IncomeRepository;
-import com.EmaDeveloper.ExpenseTracker.stats.dto.ExpenseStatsDTO;
-import com.EmaDeveloper.ExpenseTracker.stats.dto.GraphDTO;
-import com.EmaDeveloper.ExpenseTracker.stats.dto.IncomeStatsDTO;
-import com.EmaDeveloper.ExpenseTracker.stats.dto.StatsDTO;
+import com.EmaDeveloper.ExpenseTracker.stats.dto.*;
 import com.EmaDeveloper.ExpenseTracker.stats.mapper.StatsMapper;
 import com.EmaDeveloper.ExpenseTracker.users.dto.UserSummaryDTO;
 import com.EmaDeveloper.ExpenseTracker.users.entities.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -80,12 +76,18 @@ public class StatsServiceImpl implements StatsService {
         // Balance
         Double balance = (totalIncomes == null ? 0 : totalIncomes) - (totalExpenses == null ? 0 : totalExpenses);
 
+        // Monthly Expenses
+        LocalDate startOfYear = LocalDate.now().withDayOfYear(1);
+        List<MonthlyExpensesDTO> monthlyExpenses = expenseRepository.sumMonthlyByUserSince(user, startOfYear);
+
         // Return StatsDTO
         StatsDTO statsDTO = new StatsDTO();
 
         statsDTO.setBalance(balance);
         statsDTO.setTotalIncomes(totalIncomes);
         statsDTO.setTotalExpenses(totalExpenses);
+
+        statsDTO.setMonthlyExpenses(monthlyExpenses);
 
         statsDTO.setIncomes(incomeStats);
         statsDTO.setExpenses(expenseStats);
@@ -96,4 +98,5 @@ public class StatsServiceImpl implements StatsService {
 
         return statsDTO;
     }
+
 }

@@ -12,10 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Validated
 @RestController
@@ -54,7 +51,7 @@ public class StatsController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<StatsDTO> getStats(@AuthenticationPrincipal User user) {
         StatsDTO stats = statsService.getStats(user);
-        if (stats == null){
+        if (stats == null) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(stats);
