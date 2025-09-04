@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MonthlyExpensesDTO {
-
+public class MonthlyIncomesDTO {
     private int year;
     private int month;
+
     private Double totalAmount;
 
     public String getLabel() {

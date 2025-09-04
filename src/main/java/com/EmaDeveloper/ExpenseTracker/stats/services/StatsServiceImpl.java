@@ -12,7 +12,6 @@ import com.EmaDeveloper.ExpenseTracker.stats.mapper.StatsMapper;
 import com.EmaDeveloper.ExpenseTracker.users.dto.UserSummaryDTO;
 import com.EmaDeveloper.ExpenseTracker.users.entities.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -76,9 +75,13 @@ public class StatsServiceImpl implements StatsService {
         // Balance
         Double balance = (totalIncomes == null ? 0 : totalIncomes) - (totalExpenses == null ? 0 : totalExpenses);
 
-        // Monthly Expenses
+        // Date Range for Monthly Expenses/Incomes (From start of year to now)
         LocalDate startOfYear = LocalDate.now().withDayOfYear(1);
+        // Monthly Expenses
         List<MonthlyExpensesDTO> monthlyExpenses = expenseRepository.sumMonthlyByUserSince(user, startOfYear);
+
+        // Monthly Incomes
+        List<MonthlyIncomesDTO> monthlyIncomes = incomeRepository.sumMonthlyByUserSince(user, startOfYear);
 
         // Return StatsDTO
         StatsDTO statsDTO = new StatsDTO();
@@ -88,6 +91,7 @@ public class StatsServiceImpl implements StatsService {
         statsDTO.setTotalExpenses(totalExpenses);
 
         statsDTO.setMonthlyExpenses(monthlyExpenses);
+        statsDTO.setMonthlyIncomes(monthlyIncomes);
 
         statsDTO.setIncomes(incomeStats);
         statsDTO.setExpenses(expenseStats);
