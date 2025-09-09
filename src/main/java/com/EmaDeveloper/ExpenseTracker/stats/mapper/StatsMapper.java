@@ -23,6 +23,7 @@ public class StatsMapper {
                         income.getCategory(),
                         income.getDate(),
                         income.getAmount(),
+                        income.getIcon(),
                         mapToUserSummaryDTO(income.getUser())
                 ))
                 .toList();

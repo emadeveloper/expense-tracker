@@ -16,6 +16,7 @@ public class IncomeMapper {
         income.setDescription(incomeRequestDTO.getDescription());
         income.setCategory(incomeRequestDTO.getCategory());
         income.setAmount(incomeRequestDTO.getAmount());
+        income.setIcon(incomeRequestDTO.getIcon());
         income.setUser(user);
 
         return income;
@@ -28,6 +29,7 @@ public class IncomeMapper {
         responseDTO.setDescription(income.getDescription());
         responseDTO.setCategory(income.getCategory());
         responseDTO.setAmount(income.getAmount());
+        responseDTO.setIcon(income.getIcon());
         responseDTO.setDate(income.getDate() != null ? income.getDate() : LocalDate.now());
 
         UserSummaryDTO userSummary = new UserSummaryDTO();

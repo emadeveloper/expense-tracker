@@ -82,11 +82,10 @@ public class IncomeController {
             @ApiResponse(responseCode = "500", description = "Error creating income")
     })
 
-    @PostMapping
+    @PostMapping("/add-income")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<IncomeResponseDTO> postIncome(@Valid @RequestBody IncomeRequestDTO incomeDTO) {
         IncomeResponseDTO createdIncome = incomeService.postIncome(incomeDTO);
-
         return ResponseEntity.status(HttpStatus.CREATED).body(createdIncome);
     }
 

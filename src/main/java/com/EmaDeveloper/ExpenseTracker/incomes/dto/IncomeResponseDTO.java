@@ -17,5 +17,6 @@ public class IncomeResponseDTO {
     private String category;
     private LocalDate date;
     private Double amount;
+    private String icon;
     private UserSummaryDTO user;
 }
