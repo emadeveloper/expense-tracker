@@ -39,4 +39,6 @@ public interface IncomeRepository extends JpaRepository<Income, Long> {
     Income findTopByUserOrderByAmountDesc(User user);
 
     Income findTopByUserOrderByAmountAsc(User user);
+
+    List <Income> findLast5ByUserOrderByDateDesc(User user);
 }

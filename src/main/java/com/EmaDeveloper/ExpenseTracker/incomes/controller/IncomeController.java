@@ -76,6 +76,23 @@ public class IncomeController {
         return ResponseEntity.ok(income);
     }
 
+    @Operation(summary = "Get last 5 incomes by current user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Incomes retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "No incomes found for the current user"),
+            @ApiResponse(responseCode = "500", description = "Error retrieving incomes for the current user"),
+    })
+
+    @GetMapping("/my-incomes/last-5")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<IncomeResponseDTO>> getLast5IncomesByCurrentUser(){
+        List<IncomeResponseDTO> incomes = incomeService.getLast5IncomesByCurrentUser();
+        if (incomes.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok().body(incomes);
+    }
+
     @Operation(summary = "Create a new income")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Income created successfully"),

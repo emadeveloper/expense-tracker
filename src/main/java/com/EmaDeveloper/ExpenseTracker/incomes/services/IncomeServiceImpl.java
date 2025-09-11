@@ -33,6 +33,16 @@ public class IncomeServiceImpl implements IncomeService {
                 .toList();
     }
 
+    @Override
+    public List<IncomeResponseDTO> getLast5IncomesByCurrentUser() {
+        User user = authService.getCurrentUser();
+
+        return incomeRepository.findLast5ByUserOrderByDateDesc(user)
+                .stream()
+                .map(IncomeMapper::toResponseDTO)
+                .toList();
+    }
+
     // method to get all incomes by the current user
     @Override
     public List<IncomeResponseDTO> getAllIncomesByCurrentUser() {

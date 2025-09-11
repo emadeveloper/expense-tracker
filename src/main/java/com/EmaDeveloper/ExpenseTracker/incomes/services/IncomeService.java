@@ -10,6 +10,8 @@ public interface IncomeService {
 
     List<IncomeResponseDTO> getAllIncomes();
 
+    List<IncomeResponseDTO> getLast5IncomesByCurrentUser();
+
     List<IncomeResponseDTO> getAllIncomesByCurrentUser();
 
     IncomeResponseDTO getIncomeById(Long id);
