@@ -40,5 +40,5 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
     Expense findTopByUserOrderByAmountAsc(User user);
 
-
+    List<Expense> findLast5ByUserOrderByDateDesc(User user);
 }

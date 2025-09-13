@@ -129,7 +129,7 @@ public class IncomeController {
     })
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Void> deleteIncome(@PathVariable Long id){
         incomeService.deleteIncome(id);
         return ResponseEntity.noContent().build();

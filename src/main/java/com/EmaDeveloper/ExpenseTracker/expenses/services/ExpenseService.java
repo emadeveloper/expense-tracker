@@ -18,4 +18,6 @@ public interface ExpenseService {
     ExpenseResponseDTO updateExpense(Long id, ExpenseRequestDTO expenseDTO);
 
     void deleteExpense(Long id);
+
+    List<ExpenseResponseDTO> getLast5ExpensesByCurrentUser();
 }

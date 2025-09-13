@@ -46,6 +46,17 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     }
 
+    // method to get the last 5 expenses by the current user
+    @Override
+    public List<ExpenseResponseDTO> getLast5ExpensesByCurrentUser() {
+        User user = authService.getCurrentUser();
+
+        return expenseRepository.findLast5ByUserOrderByDateDesc(user)
+                .stream()
+                .map(ExpenseMapper::toResponseDTO)
+                .toList();
+    }
+
     // method to get an expense by id
     @Override
     public ExpenseResponseDTO getExpenseById(Long id) {

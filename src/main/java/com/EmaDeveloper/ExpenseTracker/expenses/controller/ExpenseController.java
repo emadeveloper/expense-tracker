@@ -74,6 +74,21 @@ public class ExpenseController {
         return ResponseEntity.ok(expense);
     }
 
+    @Operation(summary = "Get the last 5 expenses by current user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Expenses retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Expenses not found for the user"),
+            @ApiResponse(responseCode = "500", description = "Error retrieving expenses for the user"),
+    })
+
+    @GetMapping("/my-expenses/last-5")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<ExpenseResponseDTO>> getLast5ExpensesByCurrentUser() {
+        List<ExpenseResponseDTO> expenses = expenseService.getLast5ExpensesByCurrentUser();
+
+        return ResponseEntity.ok(expenses);
+    }
+
     @Operation(summary = "Create a new expense")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Expense created successfully"),
