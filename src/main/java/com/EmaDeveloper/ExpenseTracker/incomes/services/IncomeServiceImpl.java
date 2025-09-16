@@ -97,6 +97,7 @@ public class IncomeServiceImpl implements IncomeService {
         income.setCategory(incomeDTO.getCategory());
         income.setAmount(incomeDTO.getAmount());
         income.setDate(incomeDTO.getDate());
+        income.setIcon(incomeDTO.getIcon());
 
         Income updatedIncome = incomeRepository.save(income);
 
