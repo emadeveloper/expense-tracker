@@ -12,7 +12,7 @@ import java.time.LocalDate;
 public class ExpenseRequestDTO {
 
     @NotNull(message = "Title is required")
-    @Size(min = 5, max = 50, message = "Title must be between 5 and 50 characters")
+    @Size(min = 1, max = 50, message = "Title must be between 1 and 50 characters")
     private String title;
 
     @NotNull(message = "Description is required")
@@ -29,4 +29,7 @@ public class ExpenseRequestDTO {
     @NotNull(message = "Amount is required")
     @Positive(message = "Amount must be positive")
     private Double amount;
+
+    @NotNull(message = "Emoji is required")
+    private String icon;
 }

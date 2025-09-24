@@ -33,7 +33,7 @@ public class ExpenseController {
             @ApiResponse(responseCode = "500", description = "Error retrieving expenses")
     })
 
-    // Endpoint to get all expenses (only accessible by ADMIN)
+    // Endpoint to get all expenses form all users (only accessible by ADMIN)
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ExpenseResponseDTO>> getAllExpenses() {
@@ -96,7 +96,7 @@ public class ExpenseController {
     })
 
     // Endpoint to create a new expense
-    @PostMapping
+    @PostMapping("/add-expense")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<ExpenseResponseDTO> postExpense(@Valid @RequestBody ExpenseRequestDTO expenseDTO) {
         ExpenseResponseDTO createdExpense = expenseService.postExpense(expenseDTO);

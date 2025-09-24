@@ -38,6 +38,7 @@ public class StatsMapper {
                         expense.getCategory(),
                         expense.getDate(),
                         expense.getAmount(),
+                        expense.getIcon(),
                         mapToUserSummaryDTO(expense.getUser())
                 ))
                 .toList();

@@ -16,6 +16,7 @@ public class ExpenseMapper {
         expense.setCategory(expenseRequestDTO.getCategory());
         expense.setAmount(expenseRequestDTO.getAmount());
         expense.setDescription(expenseRequestDTO.getDescription());
+        expense.setIcon(expenseRequestDTO.getIcon());
         expense.setUser(user);
 
         return expense;
@@ -29,6 +30,7 @@ public class ExpenseMapper {
         responseDTO.setCategory(expense.getCategory());
         responseDTO.setAmount(expense.getAmount());
         responseDTO.setDescription(expense.getDescription());
+        responseDTO.setIcon(expense.getIcon());
 
         UserSummaryDTO userSummary = new UserSummaryDTO();
         userSummary.setId(expense.getUser().getId());

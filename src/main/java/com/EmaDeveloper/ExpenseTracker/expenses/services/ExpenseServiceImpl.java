@@ -99,6 +99,8 @@ public class ExpenseServiceImpl implements ExpenseService {
         expense.setDate(expenseDTO.getDate());
         expense.setCategory(expenseDTO.getCategory());
         expense.setAmount(expenseDTO.getAmount());
+        expense.setIcon(expenseDTO.getIcon());
+
 
         Expense updatedExpense = expenseRepository.save(expense);
 
