@@ -15,5 +15,6 @@ public class MinMaxDTO {
     private String description;
     private String category;
     private Double amount;
+    private String icon;
     private LocalDate date;
 }

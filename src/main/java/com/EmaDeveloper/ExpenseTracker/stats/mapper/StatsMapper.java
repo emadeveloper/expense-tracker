@@ -53,6 +53,7 @@ public class StatsMapper {
                 income.getCategory(),
                 income.getDescription(),
                 income.getAmount(),
+                income.getIcon(),
                 income.getDate()
         );
     }
@@ -66,6 +67,7 @@ public class StatsMapper {
                 expense.getCategory(),
                 expense.getDescription(),
                 expense.getAmount(),
+                expense.getIcon(),
                 expense.getDate()
         );
     }
