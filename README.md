@@ -48,13 +48,13 @@ Instalación y uso
    ```bash
     mvn spring-boot:run
     La API estará disponible en:
-    http://localhost:8080/api
+    http://localhost:8080/api/v1
 
 Endpoints principales:
 
 POST /auth/login → Login
 
-POST /auth/register → Registro
+POST /auth/signup → Registro
 
 GET /incomes/my-incomes → Listar ingresos
 
